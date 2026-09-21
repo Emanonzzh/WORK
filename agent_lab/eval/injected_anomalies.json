@@ -1,0 +1,67 @@
+{
+  "note": "在真实 orders 上注入的已知异常。评测时用差分法：只统计注入表上新出现的异常。",
+  "table": "orders_injected",
+  "baseline_table": "orders",
+  "injections": [
+    {
+      "id": "INJ-01",
+      "type": "level_shift_down",
+      "dimension": "platform",
+      "value": "APP",
+      "start": "2025-09-01",
+      "end": "2025-09-14",
+      "factor": 0.4,
+      "desc": "APP 平台 9 月上半月销售额被压到 40%（持续型下滑）"
+    },
+    {
+      "id": "INJ-02",
+      "type": "spike_up",
+      "dimension": "platform",
+      "value": "APP",
+      "start": "2025-06-18",
+      "end": "2025-06-18",
+      "factor": 3.5,
+      "desc": "APP 平台 6/18 单日销售额 3.5 倍（脉冲型暴涨，如刷单/大促异常）"
+    },
+    {
+      "id": "INJ-03",
+      "type": "level_shift_up",
+      "dimension": "platform",
+      "value": "微信公众号",
+      "start": "2025-07-01",
+      "end": "2025-07-14",
+      "factor": 1.8,
+      "desc": "微信公众号 7 月上半月销售额 1.8 倍（持续型异常增长）"
+    },
+    {
+      "id": "INJ-04",
+      "type": "spike_down",
+      "dimension": "platform",
+      "value": "微信公众号",
+      "start": "2025-10-15",
+      "end": "2025-10-15",
+      "factor": 0.25,
+      "desc": "微信公众号 10/15 单日销售额跌到 25%（脉冲型塌陷，如接口故障）"
+    },
+    {
+      "id": "INJ-05",
+      "type": "level_shift_down",
+      "dimension": "platform",
+      "value": "APP",
+      "start": "2025-03-01",
+      "end": "2025-03-21",
+      "factor": 0.5,
+      "desc": "APP 平台 3 月前三周销售额腰斩（月度级下滑）"
+    },
+    {
+      "id": "INJ-06",
+      "type": "level_shift_up",
+      "dimension": "platform",
+      "value": "APP",
+      "start": "2025-11-10",
+      "end": "2025-11-23",
+      "factor": 1.6,
+      "desc": "APP 平台 11 月双周销售额 1.6 倍（大促型增长）"
+    }
+  ]
+}

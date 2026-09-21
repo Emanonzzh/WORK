@@ -1,0 +1,114 @@
+{
+  "period": "2025-10->2025-11",
+  "text_level": {
+    "checked": 88,
+    "violations": [],
+    "pass_rate": 1.0,
+    "passed": true
+  },
+  "verifier_selftest": {
+    "injected_value": "999,999.99",
+    "caught": true,
+    "violations": [
+      {
+        "token": "999,999.99",
+        "type": "数值"
+      }
+    ],
+    "conclusion": "对账器有效（能抓到注入的假数字）"
+  },
+  "db_level": {
+    "all_ok": true,
+    "checks": [
+      {
+        "period": "2025-10",
+        "metric": "revenue",
+        "report_value": 8728115.07,
+        "recomputed": 8728115.07,
+        "abs_diff": 0.0,
+        "ok": true
+      },
+      {
+        "period": "2025-10",
+        "metric": "orders",
+        "report_value": 8859.0,
+        "recomputed": 8859.0,
+        "abs_diff": 0.0,
+        "ok": true
+      },
+      {
+        "period": "2025-10",
+        "metric": "aov",
+        "report_value": 985.2258,
+        "recomputed": 985.2258,
+        "abs_diff": 0.0,
+        "ok": true
+      },
+      {
+        "period": "2025-10",
+        "metric": "refund_rate",
+        "report_value": 0.1343,
+        "recomputed": 0.1343,
+        "abs_diff": 0.0,
+        "ok": true
+      },
+      {
+        "period": "2025-10",
+        "metric": "discount_rate",
+        "report_value": 0.0611,
+        "recomputed": 0.0611,
+        "abs_diff": 0.0,
+        "ok": true
+      },
+      {
+        "period": "2025-11",
+        "metric": "revenue",
+        "report_value": 10117593.28,
+        "recomputed": 10117593.28,
+        "abs_diff": 0.0,
+        "ok": true
+      },
+      {
+        "period": "2025-11",
+        "metric": "orders",
+        "report_value": 10910.0,
+        "recomputed": 10910.0,
+        "abs_diff": 0.0,
+        "ok": true
+      },
+      {
+        "period": "2025-11",
+        "metric": "aov",
+        "report_value": 927.3688,
+        "recomputed": 927.3688,
+        "abs_diff": 0.0,
+        "ok": true
+      },
+      {
+        "period": "2025-11",
+        "metric": "refund_rate",
+        "report_value": 0.1302,
+        "recomputed": 0.1302,
+        "abs_diff": 0.0,
+        "ok": true
+      },
+      {
+        "period": "2025-11",
+        "metric": "discount_rate",
+        "report_value": 0.0539,
+        "recomputed": 0.0539,
+        "abs_diff": 0.0,
+        "ok": true
+      },
+      {
+        "period": "2025-10→2025-11",
+        "metric": "量价分解精确加总",
+        "report_value": 1389478.21,
+        "recomputed": 1389478.2100000002,
+        "abs_diff": 0.0,
+        "ok": true
+      }
+    ]
+  },
+  "llm_text_level": null
+}

@@ -1,0 +1,63 @@
+# {{ title }}
+
+> 生成时间：{{ generated_at }}　|　数据源：{{ data_source }}（{{ rows }} 行订单）
+> 对比区间：{{ period_a }} → {{ period_b }}　|　KPI 口径版本：{{ kpi_version }}
+> 本报告所有数字均由代码计算并写入，**模型不参与任何数值生成**
+
+## 一、经营概览
+
+| 指标 | {{ period_a }} | {{ period_b }} | 变化 |
+|---|---|---|---|
+| 实付额（元） | {{ ov_a.revenue }} | {{ ov_b.revenue }} | {{ mom.revenue_pct }} |
+| 订单数（单） | {{ ov_a.orders }} | {{ ov_b.orders }} | {{ mom.orders_pct }} |
+| 客单价（元/单） | {{ ov_a.aov }} | {{ ov_b.aov }} | {{ mom.aov_pct }} |
+| 退款金额率 | {{ ov_a.refund_rate }} | {{ ov_b.refund_rate }} | — |
+| 折扣率 | {{ ov_a.discount_rate }} | {{ ov_b.discount_rate }} | — |
+
+## 二、量价结构分解（谁在拉动、谁在拖累）
+
+分解式：`ΔR = 量效应 + 价效应 + 交互项`，三项**精确加总**回总变化。
+
+| 项目 | 金额（元） |
+|---|---|
+| 总变化 ΔR | {{ dec.total_delta }} |
+| ├ 量效应 | {{ dec.total_volume_effect }} |
+| ├ 价效应 | {{ dec.total_price_effect }} |
+| └ 交互项 | {{ dec.total_interaction }} |
+| **加总校验**（应为 0） | {{ dec.total_decompose_check }} |
+
+按{{ dimension_label }}拆分，贡献度 TOP{{ top_n }}：
+
+| {{ dimension_label }} | 基期实付额 | 对比期实付额 | 变化 | 贡献占比 | 量效应 | 价效应 |
+|---|---|---|---|---|---|---|
+{% for row in dec.breakdown %} | {{ row.dim_value }} | {{ row.revenue_a }} | {{ row.revenue_b }} | {{ row.delta }} | {{ row.delta_share_pct }} | {{ row.volume_effect }} | {{ row.price_effect }} |
+{% endfor %}
+
+## 三、{{ period_b }} 维度结构
+
+| {{ dimension_label }} | 实付额 | 占比 | 订单数 |
+|---|---|---|---|
+{% for row in ranks %} | {{ row.dim_value }} | {{ row.value }} | {{ row.share_pct }} | {{ row.orders_cnt }} |
+{% endfor %}
+
+## 四、异常发现（{{ period_b }}）
+
+检出 **{{ anomalies|length }}** 个异常。
+判据：同星期几基线 + 滚动中位数 + MAD 稳健 z（阈值 {{ z_threshold }}）+ 最小支持度 {{ min_orders }} 单。
+
+{% if anomalies %}
+| {{ dimension_label }} | 日期 | 类型 | 偏离 | robust_z | 样本量 |
+|---|---|---|---|---|---|
+{% for a in anomalies %} | {{ a.dim_value }} | {{ a.period }} | {{ a.method }} | {{ a.deviation_pct }} | {{ a.robust_z }} | {{ a.orders }} |
+{% endfor %}
+{% else %}
+本期未检出**统计意义上**的异常：各日波动均落在同星期几基线的正常范围内（这是结论，不是漏检）。
+{% endif %}
+
+## 五、结论
+
+{% for line in conclusions %}- {{ line }}
+{% endfor %}
+
+---
+*本报告由 `agent_lab/report.py` 生成；数字对账结果见同目录 `reconciliation_{{ period_b }}.json`。*

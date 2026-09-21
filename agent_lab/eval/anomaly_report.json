@@ -1,0 +1,2141 @@
+{
+  "params": {
+    "dimension": "platform",
+    "freq": "day",
+    "min_orders": 30,
+    "strict_tolerance_days": 3,
+    "event_gap_days": 7,
+    "event_tolerance_days": 7,
+    "clean_table": "orders",
+    "injected_table": "orders_injected"
+  },
+  "clean_table_detections": 22,
+  "event_level": {
+    "n_events": 11,
+    "tp": 6,
+    "fp": 5,
+    "fn": 0,
+    "precision": 0.5455,
+    "recall": 1.0,
+    "f1": 0.7059,
+    "true_positives": [
+      {
+        "event": {
+          "dim_value": "APP",
+          "start": "2025-02-27",
+          "end": "2025-02-27",
+          "methods": [
+            "level_shift"
+          ],
+          "n_detections": 1,
+          "max_deviation_pct": -25.72
+        },
+        "matched": "INJ-05"
+      },
+      {
+        "event": {
+          "dim_value": "APP",
+          "start": "2025-06-13",
+          "end": "2025-06-25",
+          "methods": [
+            "level_shift",
+            "spike"
+          ],
+          "n_detections": 3,
+          "max_deviation_pct": 223.58
+        },
+        "matched": "INJ-02"
+      },
+      {
+        "event": {
+          "dim_value": "APP",
+          "start": "2025-08-28",
+          "end": "2025-08-28",
+          "methods": [
+            "level_shift"
+          ],
+          "n_detections": 1,
+          "max_deviation_pct": -34.57
+        },
+        "matched": "INJ-01"
+      },
+      {
+        "event": {
+          "dim_value": "APP",
+          "start": "2025-11-06",
+          "end": "2025-11-06",
+          "methods": [
+            "level_shift"
+          ],
+          "n_detections": 1,
+          "max_deviation_pct": 31.81
+        },
+        "matched": "INJ-06"
+      },
+      {
+        "event": {
+          "dim_value": "微信公众号",
+          "start": "2025-06-28",
+          "end": "2025-06-28",
+          "methods": [
+            "level_shift"
+          ],
+          "n_detections": 1,
+          "max_deviation_pct": 31.5
+        },
+        "matched": "INJ-03"
+      },
+      {
+        "event": {
+          "dim_value": "微信公众号",
+          "start": "2025-10-16",
+          "end": "2025-10-16",
+          "methods": [
+            "level_shift"
+          ],
+          "n_detections": 1,
+          "max_deviation_pct": 29.93
+        },
+        "matched": "INJ-04"
+      }
+    ],
+    "false_positives": [
+      {
+        "dim_value": "APP",
+        "start": "2025-03-16",
+        "end": "2025-03-16",
+        "methods": [
+          "level_shift"
+        ],
+        "n_detections": 1,
+        "max_deviation_pct": 46.72
+      },
+      {
+        "dim_value": "APP",
+        "start": "2025-03-27",
+        "end": "2025-03-27",
+        "methods": [
+          "level_shift"
+        ],
+        "n_detections": 1,
+        "max_deviation_pct": 25.31
+      },
+      {
+        "dim_value": "APP",
+        "start": "2025-09-10",
+        "end": "2025-09-10",
+        "methods": [
+          "level_shift"
+        ],
+        "n_detections": 1,
+        "max_deviation_pct": 48.72
+      },
+      {
+        "dim_value": "APP",
+        "start": "2025-11-16",
+        "end": "2025-11-23",
+        "methods": [
+          "level_shift",
+          "spike"
+        ],
+        "n_detections": 4,
+        "max_deviation_pct": 95.14
+      },
+      {
+        "dim_value": "微信公众号",
+        "start": "2025-07-08",
+        "end": "2025-07-13",
+        "methods": [
+          "level_shift",
+          "spike"
+        ],
+        "n_detections": 2,
+        "max_deviation_pct": 75.62
+      }
+    ],
+    "missed": []
+  },
+  "strict": {
+    "pool_size": 17,
+    "tp": 6,
+    "fp": 11,
+    "fn": 0,
+    "precision": 0.3529,
+    "recall": 1.0,
+    "f1": 0.5217,
+    "true_positives": [
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-02-27",
+          "metric": "revenue",
+          "value": 100166.62,
+          "baseline": 89532.77,
+          "deviation_pct": -25.72,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 84
+        },
+        "matched": "INJ-05"
+      },
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-06-18",
+          "metric": "revenue",
+          "value": 602767.19,
+          "baseline": 186282.43,
+          "deviation_pct": 223.58,
+          "robust_z": 12.1,
+          "method": "spike",
+          "orders": 220
+        },
+        "matched": "INJ-02"
+      },
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-09-10",
+          "metric": "revenue",
+          "value": 51845.73,
+          "baseline": 51976.44,
+          "deviation_pct": 48.72,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 195
+        },
+        "matched": "INJ-01"
+      },
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-16",
+          "metric": "revenue",
+          "value": 335443.87,
+          "baseline": 171897.85,
+          "deviation_pct": 95.14,
+          "robust_z": 4.75,
+          "method": "spike",
+          "orders": 229
+        },
+        "matched": "INJ-06"
+      },
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-06-28",
+          "metric": "revenue",
+          "value": 171474.29,
+          "baseline": 149418.95,
+          "deviation_pct": 31.5,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 118
+        },
+        "matched": "INJ-03"
+      },
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-10-16",
+          "metric": "revenue",
+          "value": 100498.83,
+          "baseline": 102157.87,
+          "deviation_pct": 29.93,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 91
+        },
+        "matched": "INJ-04"
+      }
+    ],
+    "false_positives": [
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-03-16",
+        "metric": "revenue",
+        "value": 73706.31,
+        "baseline": 45658.14,
+        "deviation_pct": 46.72,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 169
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-03-27",
+        "metric": "revenue",
+        "value": 101487.85,
+        "baseline": 91729.9,
+        "deviation_pct": 25.31,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 71
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-06-13",
+        "metric": "revenue",
+        "value": 106603.06,
+        "baseline": 158160.0,
+        "deviation_pct": 32.96,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 126
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-06-25",
+        "metric": "revenue",
+        "value": 182925.11,
+        "baseline": 210274.86,
+        "deviation_pct": -26.73,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 232
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-08-28",
+        "metric": "revenue",
+        "value": 149594.37,
+        "baseline": 147476.8,
+        "deviation_pct": -34.57,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 177
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-11-06",
+        "metric": "revenue",
+        "value": 123832.83,
+        "baseline": 133882.3,
+        "deviation_pct": 31.81,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 159
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-11-17",
+        "metric": "revenue",
+        "value": 324470.74,
+        "baseline": 171103.61,
+        "deviation_pct": 89.63,
+        "robust_z": 4.46,
+        "method": "spike",
+        "orders": 267
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-11-22",
+        "metric": "revenue",
+        "value": 235836.16,
+        "baseline": 263788.28,
+        "deviation_pct": -27.14,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 181
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-11-23",
+        "metric": "revenue",
+        "value": 322741.1,
+        "baseline": 184430.43,
+        "deviation_pct": 74.99,
+        "robust_z": 4.02,
+        "method": "spike",
+        "orders": 239
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-07-08",
+        "metric": "revenue",
+        "value": 294099.91,
+        "baseline": 167460.77,
+        "deviation_pct": 75.62,
+        "robust_z": 3.98,
+        "method": "spike",
+        "orders": 117
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-07-13",
+        "metric": "revenue",
+        "value": 189482.56,
+        "baseline": 219718.8,
+        "deviation_pct": -26.67,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 95
+      }
+    ],
+    "missed": []
+  },
+  "raw": {
+    "pool_size": 38,
+    "tp": 6,
+    "fp": 32,
+    "fn": 0,
+    "precision": 0.1579,
+    "recall": 1.0,
+    "f1": 0.2727,
+    "true_positives": [
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-02-27",
+          "metric": "revenue",
+          "value": 100166.62,
+          "baseline": 89532.77,
+          "deviation_pct": -25.72,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 84
+        },
+        "matched": "INJ-05"
+      },
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-06-18",
+          "metric": "revenue",
+          "value": 602767.19,
+          "baseline": 186282.43,
+          "deviation_pct": 223.58,
+          "robust_z": 12.1,
+          "method": "spike",
+          "orders": 220
+        },
+        "matched": "INJ-02"
+      },
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-09-10",
+          "metric": "revenue",
+          "value": 51845.73,
+          "baseline": 51976.44,
+          "deviation_pct": 48.72,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 195
+        },
+        "matched": "INJ-01"
+      },
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-16",
+          "metric": "revenue",
+          "value": 335443.87,
+          "baseline": 171897.85,
+          "deviation_pct": 95.14,
+          "robust_z": 4.75,
+          "method": "spike",
+          "orders": 229
+        },
+        "matched": "INJ-06"
+      },
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-06-28",
+          "metric": "revenue",
+          "value": 171474.29,
+          "baseline": 149418.95,
+          "deviation_pct": 31.5,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 118
+        },
+        "matched": "INJ-03"
+      },
+      {
+        "anomaly": {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-10-16",
+          "metric": "revenue",
+          "value": 100498.83,
+          "baseline": 102157.87,
+          "deviation_pct": 29.93,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 91
+        },
+        "matched": "INJ-04"
+      }
+    ],
+    "false_positives": [
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-01-01",
+        "metric": "revenue",
+        "value": 227949.88,
+        "baseline": 93858.04,
+        "deviation_pct": 142.87,
+        "robust_z": 3.9,
+        "method": "spike",
+        "orders": 255
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-01-08",
+        "metric": "revenue",
+        "value": 76219.0,
+        "baseline": 144349.27,
+        "deviation_pct": -36.08,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 80
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-01-13",
+        "metric": "revenue",
+        "value": 140314.6,
+        "baseline": 74895.93,
+        "deviation_pct": 37.89,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 120
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-01-29",
+        "metric": "revenue",
+        "value": 83524.85,
+        "baseline": 102088.53,
+        "deviation_pct": -29.19,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 88
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-03-16",
+        "metric": "revenue",
+        "value": 73706.31,
+        "baseline": 45658.14,
+        "deviation_pct": 46.72,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 169
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-03-27",
+        "metric": "revenue",
+        "value": 101487.85,
+        "baseline": 91729.9,
+        "deviation_pct": 25.31,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 71
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-04-17",
+        "metric": "revenue",
+        "value": 113894.37,
+        "baseline": 126285.07,
+        "deviation_pct": -31.02,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 119
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-06-04",
+        "metric": "revenue",
+        "value": 220935.63,
+        "baseline": 138261.16,
+        "deviation_pct": 27.78,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 279
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-06-13",
+        "metric": "revenue",
+        "value": 106603.06,
+        "baseline": 158160.0,
+        "deviation_pct": 32.96,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 126
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-06-25",
+        "metric": "revenue",
+        "value": 182925.11,
+        "baseline": 210274.86,
+        "deviation_pct": -26.73,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 232
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-07-28",
+        "metric": "revenue",
+        "value": 173326.49,
+        "baseline": 131464.85,
+        "deviation_pct": 27.43,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 171
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-08-02",
+        "metric": "revenue",
+        "value": 153495.18,
+        "baseline": 158453.25,
+        "deviation_pct": -28.94,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 144
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-08-09",
+        "metric": "revenue",
+        "value": 126338.1,
+        "baseline": 112599.67,
+        "deviation_pct": 29.59,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 126
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-08-28",
+        "metric": "revenue",
+        "value": 149594.37,
+        "baseline": 147476.8,
+        "deviation_pct": -34.57,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 177
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-11-06",
+        "metric": "revenue",
+        "value": 123832.83,
+        "baseline": 133882.3,
+        "deviation_pct": 31.81,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 159
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-11-17",
+        "metric": "revenue",
+        "value": 324470.74,
+        "baseline": 171103.61,
+        "deviation_pct": 89.63,
+        "robust_z": 4.46,
+        "method": "spike",
+        "orders": 267
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-11-22",
+        "metric": "revenue",
+        "value": 235836.16,
+        "baseline": 263788.28,
+        "deviation_pct": -27.14,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 181
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "APP",
+        "freq": "day",
+        "period": "2025-11-23",
+        "metric": "revenue",
+        "value": 322741.1,
+        "baseline": 184430.43,
+        "deviation_pct": 74.99,
+        "robust_z": 4.02,
+        "method": "spike",
+        "orders": 239
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "web网站",
+        "freq": "day",
+        "period": "2025-01-01",
+        "metric": "revenue",
+        "value": 41028.31,
+        "baseline": 14277.64,
+        "deviation_pct": 187.36,
+        "robust_z": 3.7,
+        "method": "spike",
+        "orders": 41
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "web网站",
+        "freq": "day",
+        "period": "2025-08-03",
+        "metric": "revenue",
+        "value": 50075.12,
+        "baseline": 23134.17,
+        "deviation_pct": 116.46,
+        "robust_z": 3.73,
+        "method": "spike",
+        "orders": 36
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-01-01",
+        "metric": "revenue",
+        "value": 236374.33,
+        "baseline": 80966.87,
+        "deviation_pct": 191.94,
+        "robust_z": 4.88,
+        "method": "spike",
+        "orders": 211
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-01-08",
+        "metric": "revenue",
+        "value": 81075.24,
+        "baseline": 130814.77,
+        "deviation_pct": -27.4,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 67
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-03-10",
+        "metric": "revenue",
+        "value": 98729.94,
+        "baseline": 79017.3,
+        "deviation_pct": 29.77,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 75
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-03-28",
+        "metric": "revenue",
+        "value": 87536.79,
+        "baseline": 91639.46,
+        "deviation_pct": 31.67,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 60
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-04-17",
+        "metric": "revenue",
+        "value": 96518.46,
+        "baseline": 128246.93,
+        "deviation_pct": -29.0,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 101
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-04-27",
+        "metric": "revenue",
+        "value": 68859.93,
+        "baseline": 93689.28,
+        "deviation_pct": 26.53,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 60
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-05-13",
+        "metric": "revenue",
+        "value": 196981.55,
+        "baseline": 126020.12,
+        "deviation_pct": 25.42,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 147
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-07-08",
+        "metric": "revenue",
+        "value": 294099.91,
+        "baseline": 167460.77,
+        "deviation_pct": 75.62,
+        "robust_z": 3.98,
+        "method": "spike",
+        "orders": 117
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-07-13",
+        "metric": "revenue",
+        "value": 189482.56,
+        "baseline": 219718.8,
+        "deviation_pct": -26.67,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 95
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-07-25",
+        "metric": "revenue",
+        "value": 174535.42,
+        "baseline": 130674.88,
+        "deviation_pct": 26.85,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 123
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-08-02",
+        "metric": "revenue",
+        "value": 187078.29,
+        "baseline": 167552.94,
+        "deviation_pct": -25.65,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 141
+      },
+      {
+        "dimension": "platform",
+        "dim_value": "微信公众号",
+        "freq": "day",
+        "period": "2025-08-10",
+        "metric": "revenue",
+        "value": 147601.33,
+        "baseline": 113106.69,
+        "deviation_pct": 31.21,
+        "robust_z": null,
+        "method": "level_shift",
+        "orders": 111
+      }
+    ],
+    "missed": []
+  },
+  "false_positive_attribution": [
+    {
+      "dimension": "platform",
+      "dim_value": "APP",
+      "freq": "day",
+      "period": "2025-03-16",
+      "metric": "revenue",
+      "value": 73706.31,
+      "baseline": 45658.14,
+      "deviation_pct": 46.72,
+      "robust_z": null,
+      "method": "level_shift",
+      "orders": 169,
+      "attribution": "INJ-05(±0天)"
+    },
+    {
+      "dimension": "platform",
+      "dim_value": "APP",
+      "freq": "day",
+      "period": "2025-03-27",
+      "metric": "revenue",
+      "value": 101487.85,
+      "baseline": 91729.9,
+      "deviation_pct": 25.31,
+      "robust_z": null,
+      "method": "level_shift",
+      "orders": 71,
+      "attribution": "INJ-05(±6天)"
+    },
+    {
+      "dimension": "platform",
+      "dim_value": "APP",
+      "freq": "day",
+      "period": "2025-06-13",
+      "metric": "revenue",
+      "value": 106603.06,
+      "baseline": 158160.0,
+      "deviation_pct": 32.96,
+      "robust_z": null,
+      "method": "level_shift",
+      "orders": 126,
+      "attribution": "INJ-02(±5天)"
+    },
+    {
+      "dimension": "platform",
+      "dim_value": "APP",
+      "freq": "day",
+      "period": "2025-06-25",
+      "metric": "revenue",
+      "value": 182925.11,
+      "baseline": 210274.86,
+      "deviation_pct": -26.73,
+      "robust_z": null,
+      "method": "level_shift",
+      "orders": 232,
+      "attribution": "INJ-02(±7天)"
+    },
+    {
+      "dimension": "platform",
+      "dim_value": "APP",
+      "freq": "day",
+      "period": "2025-08-28",
+      "metric": "revenue",
+      "value": 149594.37,
+      "baseline": 147476.8,
+      "deviation_pct": -34.57,
+      "robust_z": null,
+      "method": "level_shift",
+      "orders": 177,
+      "attribution": "INJ-01(±4天)"
+    },
+    {
+      "dimension": "platform",
+      "dim_value": "APP",
+      "freq": "day",
+      "period": "2025-11-06",
+      "metric": "revenue",
+      "value": 123832.83,
+      "baseline": 133882.3,
+      "deviation_pct": 31.81,
+      "robust_z": null,
+      "method": "level_shift",
+      "orders": 159,
+      "attribution": "INJ-06(±4天)"
+    },
+    {
+      "dimension": "platform",
+      "dim_value": "APP",
+      "freq": "day",
+      "period": "2025-11-17",
+      "metric": "revenue",
+      "value": 324470.74,
+      "baseline": 171103.61,
+      "deviation_pct": 89.63,
+      "robust_z": 4.46,
+      "method": "spike",
+      "orders": 267,
+      "attribution": "INJ-06(±0天)"
+    },
+    {
+      "dimension": "platform",
+      "dim_value": "APP",
+      "freq": "day",
+      "period": "2025-11-22",
+      "metric": "revenue",
+      "value": 235836.16,
+      "baseline": 263788.28,
+      "deviation_pct": -27.14,
+      "robust_z": null,
+      "method": "level_shift",
+      "orders": 181,
+      "attribution": "INJ-06(±0天)"
+    },
+    {
+      "dimension": "platform",
+      "dim_value": "APP",
+      "freq": "day",
+      "period": "2025-11-23",
+      "metric": "revenue",
+      "value": 322741.1,
+      "baseline": 184430.43,
+      "deviation_pct": 74.99,
+      "robust_z": 4.02,
+      "method": "spike",
+      "orders": 239,
+      "attribution": "INJ-06(±0天)"
+    },
+    {
+      "dimension": "platform",
+      "dim_value": "微信公众号",
+      "freq": "day",
+      "period": "2025-07-08",
+      "metric": "revenue",
+      "value": 294099.91,
+      "baseline": 167460.77,
+      "deviation_pct": 75.62,
+      "robust_z": 3.98,
+      "method": "spike",
+      "orders": 117,
+      "attribution": "INJ-03(±0天)"
+    },
+    {
+      "dimension": "platform",
+      "dim_value": "微信公众号",
+      "freq": "day",
+      "period": "2025-07-13",
+      "metric": "revenue",
+      "value": 189482.56,
+      "baseline": 219718.8,
+      "deviation_pct": -26.67,
+      "robust_z": null,
+      "method": "level_shift",
+      "orders": 95,
+      "attribution": "INJ-03(±0天)"
+    }
+  ],
+  "unrelated_fp": 0,
+  "threshold_sweep": [
+    {
+      "min_orders": 10,
+      "clean_detected": 35,
+      "pool_size": 17,
+      "tp": 6,
+      "fp": 11,
+      "fn": 0,
+      "precision": 0.3529,
+      "recall": 1.0,
+      "f1": 0.5217,
+      "true_positives": [
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-02-27",
+            "metric": "revenue",
+            "value": 100166.62,
+            "baseline": 89532.77,
+            "deviation_pct": -25.72,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 84
+          },
+          "matched": "INJ-05"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-06-18",
+            "metric": "revenue",
+            "value": 602767.19,
+            "baseline": 186282.43,
+            "deviation_pct": 223.58,
+            "robust_z": 12.1,
+            "method": "spike",
+            "orders": 220
+          },
+          "matched": "INJ-02"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-09-10",
+            "metric": "revenue",
+            "value": 51845.73,
+            "baseline": 51976.44,
+            "deviation_pct": 48.72,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 195
+          },
+          "matched": "INJ-01"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-11-16",
+            "metric": "revenue",
+            "value": 335443.87,
+            "baseline": 171897.85,
+            "deviation_pct": 95.14,
+            "robust_z": 4.75,
+            "method": "spike",
+            "orders": 229
+          },
+          "matched": "INJ-06"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "微信公众号",
+            "freq": "day",
+            "period": "2025-06-28",
+            "metric": "revenue",
+            "value": 171474.29,
+            "baseline": 149418.95,
+            "deviation_pct": 31.5,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 118
+          },
+          "matched": "INJ-03"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "微信公众号",
+            "freq": "day",
+            "period": "2025-10-16",
+            "metric": "revenue",
+            "value": 100498.83,
+            "baseline": 102157.87,
+            "deviation_pct": 29.93,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 91
+          },
+          "matched": "INJ-04"
+        }
+      ],
+      "false_positives": [
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-03-16",
+          "metric": "revenue",
+          "value": 73706.31,
+          "baseline": 45658.14,
+          "deviation_pct": 46.72,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 169
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-03-27",
+          "metric": "revenue",
+          "value": 101487.85,
+          "baseline": 91729.9,
+          "deviation_pct": 25.31,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 71
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-06-13",
+          "metric": "revenue",
+          "value": 106603.06,
+          "baseline": 158160.0,
+          "deviation_pct": 32.96,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 126
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-06-25",
+          "metric": "revenue",
+          "value": 182925.11,
+          "baseline": 210274.86,
+          "deviation_pct": -26.73,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 232
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-08-28",
+          "metric": "revenue",
+          "value": 149594.37,
+          "baseline": 147476.8,
+          "deviation_pct": -34.57,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 177
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-06",
+          "metric": "revenue",
+          "value": 123832.83,
+          "baseline": 133882.3,
+          "deviation_pct": 31.81,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 159
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-17",
+          "metric": "revenue",
+          "value": 324470.74,
+          "baseline": 171103.61,
+          "deviation_pct": 89.63,
+          "robust_z": 4.46,
+          "method": "spike",
+          "orders": 267
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-22",
+          "metric": "revenue",
+          "value": 235836.16,
+          "baseline": 263788.28,
+          "deviation_pct": -27.14,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 181
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-23",
+          "metric": "revenue",
+          "value": 322741.1,
+          "baseline": 184430.43,
+          "deviation_pct": 74.99,
+          "robust_z": 4.02,
+          "method": "spike",
+          "orders": 239
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-07-08",
+          "metric": "revenue",
+          "value": 294099.91,
+          "baseline": 167460.77,
+          "deviation_pct": 75.62,
+          "robust_z": 3.98,
+          "method": "spike",
+          "orders": 117
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-07-13",
+          "metric": "revenue",
+          "value": 189482.56,
+          "baseline": 219718.8,
+          "deviation_pct": -26.67,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 95
+        }
+      ],
+      "missed": [],
+      "event_precision": 0.5455,
+      "event_recall": 1.0,
+      "event_f1": 0.7059
+    },
+    {
+      "min_orders": 30,
+      "clean_detected": 22,
+      "pool_size": 17,
+      "tp": 6,
+      "fp": 11,
+      "fn": 0,
+      "precision": 0.3529,
+      "recall": 1.0,
+      "f1": 0.5217,
+      "true_positives": [
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-02-27",
+            "metric": "revenue",
+            "value": 100166.62,
+            "baseline": 89532.77,
+            "deviation_pct": -25.72,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 84
+          },
+          "matched": "INJ-05"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-06-18",
+            "metric": "revenue",
+            "value": 602767.19,
+            "baseline": 186282.43,
+            "deviation_pct": 223.58,
+            "robust_z": 12.1,
+            "method": "spike",
+            "orders": 220
+          },
+          "matched": "INJ-02"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-09-10",
+            "metric": "revenue",
+            "value": 51845.73,
+            "baseline": 51976.44,
+            "deviation_pct": 48.72,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 195
+          },
+          "matched": "INJ-01"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-11-16",
+            "metric": "revenue",
+            "value": 335443.87,
+            "baseline": 171897.85,
+            "deviation_pct": 95.14,
+            "robust_z": 4.75,
+            "method": "spike",
+            "orders": 229
+          },
+          "matched": "INJ-06"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "微信公众号",
+            "freq": "day",
+            "period": "2025-06-28",
+            "metric": "revenue",
+            "value": 171474.29,
+            "baseline": 149418.95,
+            "deviation_pct": 31.5,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 118
+          },
+          "matched": "INJ-03"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "微信公众号",
+            "freq": "day",
+            "period": "2025-10-16",
+            "metric": "revenue",
+            "value": 100498.83,
+            "baseline": 102157.87,
+            "deviation_pct": 29.93,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 91
+          },
+          "matched": "INJ-04"
+        }
+      ],
+      "false_positives": [
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-03-16",
+          "metric": "revenue",
+          "value": 73706.31,
+          "baseline": 45658.14,
+          "deviation_pct": 46.72,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 169
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-03-27",
+          "metric": "revenue",
+          "value": 101487.85,
+          "baseline": 91729.9,
+          "deviation_pct": 25.31,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 71
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-06-13",
+          "metric": "revenue",
+          "value": 106603.06,
+          "baseline": 158160.0,
+          "deviation_pct": 32.96,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 126
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-06-25",
+          "metric": "revenue",
+          "value": 182925.11,
+          "baseline": 210274.86,
+          "deviation_pct": -26.73,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 232
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-08-28",
+          "metric": "revenue",
+          "value": 149594.37,
+          "baseline": 147476.8,
+          "deviation_pct": -34.57,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 177
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-06",
+          "metric": "revenue",
+          "value": 123832.83,
+          "baseline": 133882.3,
+          "deviation_pct": 31.81,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 159
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-17",
+          "metric": "revenue",
+          "value": 324470.74,
+          "baseline": 171103.61,
+          "deviation_pct": 89.63,
+          "robust_z": 4.46,
+          "method": "spike",
+          "orders": 267
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-22",
+          "metric": "revenue",
+          "value": 235836.16,
+          "baseline": 263788.28,
+          "deviation_pct": -27.14,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 181
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-23",
+          "metric": "revenue",
+          "value": 322741.1,
+          "baseline": 184430.43,
+          "deviation_pct": 74.99,
+          "robust_z": 4.02,
+          "method": "spike",
+          "orders": 239
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-07-08",
+          "metric": "revenue",
+          "value": 294099.91,
+          "baseline": 167460.77,
+          "deviation_pct": 75.62,
+          "robust_z": 3.98,
+          "method": "spike",
+          "orders": 117
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-07-13",
+          "metric": "revenue",
+          "value": 189482.56,
+          "baseline": 219718.8,
+          "deviation_pct": -26.67,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 95
+        }
+      ],
+      "missed": [],
+      "event_precision": 0.5455,
+      "event_recall": 1.0,
+      "event_f1": 0.7059
+    },
+    {
+      "min_orders": 50,
+      "clean_detected": 17,
+      "pool_size": 17,
+      "tp": 6,
+      "fp": 11,
+      "fn": 0,
+      "precision": 0.3529,
+      "recall": 1.0,
+      "f1": 0.5217,
+      "true_positives": [
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-02-27",
+            "metric": "revenue",
+            "value": 100166.62,
+            "baseline": 89532.77,
+            "deviation_pct": -25.72,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 84
+          },
+          "matched": "INJ-05"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-06-18",
+            "metric": "revenue",
+            "value": 602767.19,
+            "baseline": 186282.43,
+            "deviation_pct": 223.58,
+            "robust_z": 12.1,
+            "method": "spike",
+            "orders": 220
+          },
+          "matched": "INJ-02"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-09-10",
+            "metric": "revenue",
+            "value": 51845.73,
+            "baseline": 51976.44,
+            "deviation_pct": 48.72,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 195
+          },
+          "matched": "INJ-01"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-11-16",
+            "metric": "revenue",
+            "value": 335443.87,
+            "baseline": 171897.85,
+            "deviation_pct": 95.14,
+            "robust_z": 4.75,
+            "method": "spike",
+            "orders": 229
+          },
+          "matched": "INJ-06"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "微信公众号",
+            "freq": "day",
+            "period": "2025-06-28",
+            "metric": "revenue",
+            "value": 171474.29,
+            "baseline": 149418.95,
+            "deviation_pct": 31.5,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 118
+          },
+          "matched": "INJ-03"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "微信公众号",
+            "freq": "day",
+            "period": "2025-10-16",
+            "metric": "revenue",
+            "value": 100498.83,
+            "baseline": 102157.87,
+            "deviation_pct": 29.93,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 91
+          },
+          "matched": "INJ-04"
+        }
+      ],
+      "false_positives": [
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-03-22",
+          "metric": "revenue",
+          "value": 142188.33,
+          "baseline": 54167.7,
+          "deviation_pct": 91.17,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 115
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-03-27",
+          "metric": "revenue",
+          "value": 101487.85,
+          "baseline": 91729.9,
+          "deviation_pct": 25.31,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 71
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-06-13",
+          "metric": "revenue",
+          "value": 106603.06,
+          "baseline": 158160.0,
+          "deviation_pct": 32.96,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 126
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-06-25",
+          "metric": "revenue",
+          "value": 182925.11,
+          "baseline": 210274.86,
+          "deviation_pct": -26.73,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 232
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-08-28",
+          "metric": "revenue",
+          "value": 149594.37,
+          "baseline": 147476.8,
+          "deviation_pct": -34.57,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 177
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-06",
+          "metric": "revenue",
+          "value": 123832.83,
+          "baseline": 133882.3,
+          "deviation_pct": 31.81,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 159
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-17",
+          "metric": "revenue",
+          "value": 324470.74,
+          "baseline": 171103.61,
+          "deviation_pct": 89.63,
+          "robust_z": 4.46,
+          "method": "spike",
+          "orders": 267
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-22",
+          "metric": "revenue",
+          "value": 235836.16,
+          "baseline": 263788.28,
+          "deviation_pct": -27.14,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 181
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-23",
+          "metric": "revenue",
+          "value": 322741.1,
+          "baseline": 184430.43,
+          "deviation_pct": 74.99,
+          "robust_z": 4.02,
+          "method": "spike",
+          "orders": 239
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-07-08",
+          "metric": "revenue",
+          "value": 294099.91,
+          "baseline": 167460.77,
+          "deviation_pct": 75.62,
+          "robust_z": 3.98,
+          "method": "spike",
+          "orders": 117
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-07-13",
+          "metric": "revenue",
+          "value": 189482.56,
+          "baseline": 219718.8,
+          "deviation_pct": -26.67,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 95
+        }
+      ],
+      "missed": [],
+      "event_precision": 0.6,
+      "event_recall": 1.0,
+      "event_f1": 0.75
+    },
+    {
+      "min_orders": 80,
+      "clean_detected": 7,
+      "pool_size": 13,
+      "tp": 4,
+      "fp": 9,
+      "fn": 2,
+      "precision": 0.3077,
+      "recall": 0.6667,
+      "f1": 0.4211,
+      "true_positives": [
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-06-18",
+            "metric": "revenue",
+            "value": 602767.19,
+            "baseline": 186282.43,
+            "deviation_pct": 223.58,
+            "robust_z": 12.1,
+            "method": "spike",
+            "orders": 220
+          },
+          "matched": "INJ-02"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-09-10",
+            "metric": "revenue",
+            "value": 51845.73,
+            "baseline": 51976.44,
+            "deviation_pct": 48.72,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 195
+          },
+          "matched": "INJ-01"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "APP",
+            "freq": "day",
+            "period": "2025-11-07",
+            "metric": "revenue",
+            "value": 135660.03,
+            "baseline": 140358.9,
+            "deviation_pct": 32.87,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 186
+          },
+          "matched": "INJ-06"
+        },
+        {
+          "anomaly": {
+            "dimension": "platform",
+            "dim_value": "微信公众号",
+            "freq": "day",
+            "period": "2025-06-28",
+            "metric": "revenue",
+            "value": 171474.29,
+            "baseline": 149418.95,
+            "deviation_pct": 31.5,
+            "robust_z": null,
+            "method": "level_shift",
+            "orders": 118
+          },
+          "matched": "INJ-03"
+        }
+      ],
+      "false_positives": [
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-06-13",
+          "metric": "revenue",
+          "value": 106603.06,
+          "baseline": 158160.0,
+          "deviation_pct": 32.96,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 126
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-06-25",
+          "metric": "revenue",
+          "value": 182925.11,
+          "baseline": 210274.86,
+          "deviation_pct": -26.73,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 232
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-08-28",
+          "metric": "revenue",
+          "value": 149594.37,
+          "baseline": 147476.8,
+          "deviation_pct": -34.57,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 177
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-16",
+          "metric": "revenue",
+          "value": 335443.87,
+          "baseline": 171897.85,
+          "deviation_pct": 95.14,
+          "robust_z": 4.75,
+          "method": "spike",
+          "orders": 229
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-17",
+          "metric": "revenue",
+          "value": 324470.74,
+          "baseline": 171103.61,
+          "deviation_pct": 89.63,
+          "robust_z": 4.46,
+          "method": "spike",
+          "orders": 267
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-22",
+          "metric": "revenue",
+          "value": 235836.16,
+          "baseline": 263788.28,
+          "deviation_pct": -27.14,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 181
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "APP",
+          "freq": "day",
+          "period": "2025-11-23",
+          "metric": "revenue",
+          "value": 322741.1,
+          "baseline": 184430.43,
+          "deviation_pct": 74.99,
+          "robust_z": 4.02,
+          "method": "spike",
+          "orders": 239
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-07-08",
+          "metric": "revenue",
+          "value": 294099.91,
+          "baseline": 167460.77,
+          "deviation_pct": 75.62,
+          "robust_z": 3.98,
+          "method": "spike",
+          "orders": 117
+        },
+        {
+          "dimension": "platform",
+          "dim_value": "微信公众号",
+          "freq": "day",
+          "period": "2025-07-13",
+          "metric": "revenue",
+          "value": 189482.56,
+          "baseline": 219718.8,
+          "deviation_pct": -26.67,
+          "robust_z": null,
+          "method": "level_shift",
+          "orders": 95
+        }
+      ],
+      "missed": [
+        {
+          "id": "INJ-04",
+          "desc": "微信公众号 10/15 单日销售额跌到 25%（脉冲型塌陷，如接口故障）"
+        },
+        {
+          "id": "INJ-05",
+          "desc": "APP 平台 3 月前三周销售额腰斩（月度级下滑）"
+        }
+      ],
+      "event_precision": 0.5714,
+      "event_recall": 0.6667,
+      "event_f1": 0.6154
+    }
+  ],
+  "injections": [
+    {
+      "id": "INJ-01",
+      "type": "level_shift_down",
+      "dimension": "platform",
+      "value": "APP",
+      "start": "2025-09-01",
+      "end": "2025-09-14",
+      "factor": 0.4,
+      "desc": "APP 平台 9 月上半月销售额被压到 40%（持续型下滑）"
+    },
+    {
+      "id": "INJ-02",
+      "type": "spike_up",
+      "dimension": "platform",
+      "value": "APP",
+      "start": "2025-06-18",
+      "end": "2025-06-18",
+      "factor": 3.5,
+      "desc": "APP 平台 6/18 单日销售额 3.5 倍（脉冲型暴涨，如刷单/大促异常）"
+    },
+    {
+      "id": "INJ-03",
+      "type": "level_shift_up",
+      "dimension": "platform",
+      "value": "微信公众号",
+      "start": "2025-07-01",
+      "end": "2025-07-14",
+      "factor": 1.8,
+      "desc": "微信公众号 7 月上半月销售额 1.8 倍（持续型异常增长）"
+    },
+    {
+      "id": "INJ-04",
+      "type": "spike_down",
+      "dimension": "platform",
+      "value": "微信公众号",
+      "start": "2025-10-15",
+      "end": "2025-10-15",
+      "factor": 0.25,
+      "desc": "微信公众号 10/15 单日销售额跌到 25%（脉冲型塌陷，如接口故障）"
+    },
+    {
+      "id": "INJ-05",
+      "type": "level_shift_down",
+      "dimension": "platform",
+      "value": "APP",
+      "start": "2025-03-01",
+      "end": "2025-03-21",
+      "factor": 0.5,
+      "desc": "APP 平台 3 月前三周销售额腰斩（月度级下滑）"
+    },
+    {
+      "id": "INJ-06",
+      "type": "level_shift_up",
+      "dimension": "platform",
+      "value": "APP",
+      "start": "2025-11-10",
+      "end": "2025-11-23",
+      "factor": 1.6,
+      "desc": "APP 平台 11 月双周销售额 1.6 倍（大促型增长）"
+    }
+  ]
+}

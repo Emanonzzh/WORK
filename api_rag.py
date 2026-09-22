@@ -11,7 +11,7 @@ from langchain_chroma import Chroma
 api_key = os.getenv("DASHSCOPE_API_KEY")
 if not api_key:
     sys.exit("缺少环境变量 DASHSCOPE_API_KEY：请先执行 setx 或 $env:DASHSCOPE_API_KEY=xxx 再运行")
-base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+base_url = os.getenv("DASHSCOPE_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
 
 app = FastAPI()
 

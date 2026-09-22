@@ -14,16 +14,16 @@
 """
 from __future__ import annotations
 
-import os
+import sys
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
-import pymysql
-from dotenv import load_dotenv
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-load_dotenv(str(PROJECT_ROOT / ".env"))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from agent_lab.db import connect as _connect  # noqa: E402  连接参数统一在 db.py，含 .env 加载
 
 # ---------------------------------------------------------------- 口径表
 # 企业里这张表应该版本化到数据库（kpi_definitions），让报告能标注"用了哪版口径"。
@@ -69,19 +69,6 @@ DIMENSIONS: dict[str, str] = {
 
 class ToolError(Exception):
     """工具参数/执行错误。会被当作 observation 回传给模型，让它自我修正。"""
-
-
-def _connect() -> pymysql.connections.Connection:
-    """建一个只读用途的连接（凭据来自仓库根 .env 的 DB_USER/DB_PASSWORD）。"""
-    return pymysql.connect(
-        host=os.getenv("DB_HOST", "127.0.0.1"),
-        port=int(os.getenv("DB_PORT", "3306")),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME"),
-        charset="utf8mb4",
-        cursorclass=pymysql.cursors.DictCursor,
-    )
 
 
 def _num(value: Any) -> Any:

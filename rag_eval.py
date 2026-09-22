@@ -8,7 +8,7 @@ from rag_eval_questions import test_cases   # ← 导入你昨天的测试集
 api_key = os.getenv("DASHSCOPE_API_KEY")
 if not api_key:   # 缺 key 直接报明白错，fail fast——别等 401 才发现
     sys.exit("缺少环境变量 DASHSCOPE_API_KEY：请先执行 setx 或 $env:DASHSCOPE_API_KEY=xxx 再运行")
-base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+base_url = os.getenv("DASHSCOPE_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
 
 def build_store(chunk_size):   # ← 接收切片大小参数
     embeddings = OpenAIEmbeddings(

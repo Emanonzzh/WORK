@@ -69,10 +69,39 @@ flowchart TB
 - **评测方法论**：**差分口径**剔除真实业务事件的噪声地板 + **事件化后处理**
   （持续型异常天然产生「进入+内部+恢复」多个检出点）。
 
+## 没有那份真实数据？三步建一个能跑的样例库
+
+本仓库**不分发**那 102,287 行订单 —— 数据集由上游开源项目 `ai-commerce-intelligence-platform`（README 声明 MIT）提供。
+为了让任何人 clone 完就能把整条链路跑起来，这里放了一个**样例数据生成器**：
+
+```bash
+# 0) 建表（schema 摘自上游 sql/01_create_table.sql，表名保持 orders，代码一行都不用改）
+mysql -u <user> -p <你的库> -e "source sql/01_create_table.sql"
+
+# 1) 生成样例 CSV（同 schema、同分布量级；--seed 固定则输出可复现）
+python agent_lab/make_sample_data.py --rows 1000 --out sample_orders.csv
+
+# 2) 灌进 orders 表（纯 INSERT，只需要普通账号就有的权限）
+python agent_lab/load_sample_data.py --csv sample_orders.csv --table orders
+
+# 3) 跑起来
+python agent_lab/report.py            # 出报告 + 两道数字对账
+python agent_lab/api.py               # 起服务，打开 http://127.0.0.1:8010/docs
+```
+
+> ⚠️ **样例数据是随机数。** 它能证明"流程跑得通"，**不能**用来复算本仓库任何文档里出现的数字
+> （102,287 行、+15.92%、量效应 2,020,698.05、P/R/F1 等）。那些结论只在真实数据集上成立。
+>
+> 三步已在 2026-09-23 实测跑通（建表 → 生成 → 载入 → KPI 查询，重复载入幂等）。
+> 为什么不用 `LOAD DATA INFILE`：它需要**全局 FILE 权限**，缺权限时 MySQL 返回的是 **1045**
+> 而不是 1044，很容易被误判成密码错误；`LOAD DATA LOCAL INFILE` 又受服务端 `local_infile` 开关限制。
+> 细节见 `sql/02_import_data.sample.sql` 头部与 `agent_lab/load_sample_data.py` 的 docstring。
+
 ## 快速开始
 
 ```bash
-# 前置：MySQL（orders 表 102,287 行）+ .env 配好 DB_USER/DB_PASSWORD/DB_NAME/LLM_API_KEY
+# 前置：MySQL 里要有 orders 表（真实 102,287 行，或按上一节自建样例库）
+#       + .env 配好 DB_USER/DB_PASSWORD/DB_NAME/LLM_API_KEY
 
 python agent_lab/tools.py                 # 工具自检（不花钱）
 python agent_lab/anomaly.py               # 检测器自检：对比周内校正前后的误报量
@@ -94,6 +123,8 @@ python agent_lab/p1_stress.py             # 6 场景故障注入压测
 | 文件 | 说明 |
 |---|---|
 | `agent_lab/tools.py` | 4 个确定性分析工具（内部查 MySQL）+ KPI 口径表 + **量价三因子分解**（含加总断言） |
+| `agent_lab/make_sample_data.py` | 样例数据生成器：与真实数据**同 schema、同分布量级**，`--seed` 可复现（不含任何真实订单） |
+| `agent_lab/load_sample_data.py` | 把样例 CSV 灌进 `orders`：走 INSERT 而非 `LOAD DATA`，因为后者要全局 FILE 权限 |
 | `agent_lab/anomaly.py` | 异常检测：周内效应校正 + 日历校正 + MAD 稳健统计 + 脉冲/漂移两类 |
 | `agent_lab/inject_anomalies.py` | 注入 6 个已知异常造评测集（副本表，不动原表） |
 | `agent_lab/evaluate_anomaly.py` | 差分口径 + 事件化后处理的 P/R/F1 评测 + 门槛扫描 + 误报归因 |
@@ -112,7 +143,8 @@ python agent_lab/p1_stress.py             # 6 场景故障注入压测
 
 基于 **RAG + 多工具 Agent** 的遥感地质灾害智能问答系统：支持自然语言查询地面沉降、滑坡预警、形变风险等问题，并给出**带法规依据**的回答与**结构化风险报告**。
 
-> **在线体验**：http://47.76.101.97 （Docker 部署于阿里云 ECS / Ubuntu 22.04）
+> **在线体验**：http://47.76.101.97 （阿里云 ECS / Ubuntu 22.04，Docker 容器 + Nginx 反向代理）
+> 注意是 **`http://`** 不是 https，且**没有 TLS**；手机 Chrome 若自动升级到 https 会打不开，需手动输全 `http://`。
 
 ## 项目亮点
 

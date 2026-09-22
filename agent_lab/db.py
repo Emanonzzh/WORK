@@ -1,7 +1,10 @@
 """agent_lab.db —— 统一数据库连接（从仓库根 .env 读凭据）。
 
-为什么单独抽一层：tools / anomaly / inject / evaluate / report 五个模块都要连库，
-连接参数散落各处时，改一次端口/密码就要改五处（DRY 原则）。
+为什么单独抽一层：连接参数散落各处时，改一次端口/密码就要改多处（DRY 原则）。
+实际引用本模块的六个：`tools` / `anomaly` / `inject_anomalies` / `report` / `api` / `streamlit_app`。
+（`evaluate_anomaly` 不直接连库，它走 `anomaly.detect`。）
+注：`tools` 原先自带一份 `pymysql.connect`，是在读码过程中被发现并收进本层——
+"抽了统一层但最大的取数模块还在层外"是这类重构最常见的失效方式。
 """
 from __future__ import annotations
 

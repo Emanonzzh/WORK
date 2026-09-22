@@ -30,10 +30,10 @@ if [ -n "$CONTAINER" ]; then
   docker rm -f "$CONTAINER"
 fi
 if [ -n "$KEY" ]; then
-  docker run -d --name rs-app -p 8501:8501 -e "DASHSCOPE_API_KEY=$KEY" rs-assistant
+  docker run -d --name rs-app -p 127.0.0.1:8501:8501 -e "DASHSCOPE_API_KEY=$KEY" rs-assistant
 else
   echo "!! Run manually with your key:"
-  echo "   docker run -d --name rs-app -p 8501:8501 -e DASHSCOPE_API_KEY=your-key rs-assistant"
+  echo "   docker run -d --name rs-app -p 127.0.0.1:8501:8501 -e DASHSCOPE_API_KEY=your-key rs-assistant"
   exit 1
 fi
 
@@ -41,4 +41,5 @@ echo "== 5/5 health check =="
 sleep 8
 curl -s -o /dev/null -w "http_code=%{http_code}\n" http://127.0.0.1:8501 || true
 docker ps --filter name=rs-app --format '{{.Names}}\t{{.Status}}\t{{.Ports}}'
-echo "Done. Public URL: http://47.76.101.97:8501"
+echo "Done. 8501 只绑 127.0.0.1（公网不可直连），对外入口 = Nginx 反向代理（80 端口，当前无鉴权）。"
+echo "Public URL: http://47.76.101.97/   （注意是 http，无 TLS；直连 :8501 已关闭）"

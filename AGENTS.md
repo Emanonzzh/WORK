@@ -17,8 +17,17 @@
 
 ## 两个项目的真实状态（未完成的别当成已完成的）
 
-- ✅ 项目二**已部署**：阿里云 ECS `47.76.101.97`，Streamlit `8501` 公网可访问，更新方式 `cd /root/study && git pull && bash deploy.sh`
-- ⚠️ 项目一**没有 Docker compose 文件**，端到端容器化从未验证 → 任何文档/README 不得声称"已容器化"
+- ✅ 项目二**已部署**：阿里云 ECS `47.76.101.97`，**对外入口 = Nginx 反向代理 `:80`**，地址 `http://47.76.101.97`
+  （容器内 Streamlit 的 `8501` 已收回 `127.0.0.1`，公网不可直连；`deploy.sh` 用 `-p 127.0.0.1:8501:8501`，**不要改回 `-p 8501:8501`**）
+  更新方式 `cd /root/study && git pull && bash deploy.sh`
+  （2026-09-23 01:38 复验：`http://47.76.101.97/_stcore/health` 返回 `ok`；`:8501` 直连被拒，符合预期）
+- ⚠️ 该入口**仍然只有 HTTP、没有 TLS**。换到 80 端口**没有**解决手机打不开的问题——
+  手机 Chrome 仍会把地址升级成 `https://47.76.101.97`（443 未开）而失败。
+  发给别人（含面试官）时必须写全 `http://47.76.101.97`（**不要再带 `:8501`**，那个端口已关闭），并准备截图/录屏作兜底。
+- ⚠️ 项目一**从未端到端跑过容器化** → 任何文档/README 不得声称"已容器化"。
+  精确表述：`docker-compose.yml`（7 服务 / 216 行）**存在，但是上游开源项目自带的，不在本仓库内**；
+  本仓库根目录那个 `Dockerfile` 是给项目二用的。**可说**"存量项目自带 compose 编排，我在它上面开发"；
+  **不可说**"我写了 compose""已容器化"。
 - ⚠️ 项目一的"单轮基线 vs 手写循环"对比评测**缺 baseline 脚本**，尚未做
 - ⚠️ `README.md` 的三张演示截图仍是 `<!-- TODO -->` 占位
 - ⚠️ 项目一仅在本机以 localhost 运行过 → 对外表述为"可复现"，不写"已上线"
@@ -37,10 +46,28 @@
 
 ## 环境与运行
 
-- **本仓库所在机器可能跑不了项目一**：无 `.env`（只有 `.env.example`）、无 MySQL（10.2 万行订单数据不在本机）、`pymysql` 与 `pytest` 可能均未安装。跑之前先确认，不要假设。
+- **能不能跑项目一，取决于你在哪台机器上——不要把任何一台机器的结论搬去另一台。**
+  2026-09-22 实测：开发机上 MySQL 在运行、`orders` 与 `orders_injected` 各 102,287 行、依赖齐全，跑得起来；
+  另一台机器则无 `.env`、无 MySQL。判定只需三条：① 3306 有没有监听、库里行数对不对；② 用的是哪个解释器；③ 有没有 `.env`。
+- **两个会被误判成"这台机器跑不了"的假信号**（都别据此下结论）：
+  ① `No module named 'pymysql' / 'pytest'` —— 多半是**解释器选错了**。项目依赖装在上游项目目录的 `.venv`（Python 3.12）里，
+  而系统里可能还有一个版本更高、什么都没装的 `python.exe`。先确认解释器再判断。
+  ② `1045 Access denied for user '<OS用户名>' (using password: NO)` —— 是**没加载 `.env`**，不是数据丢了。
+  凭据来自 `DB_USER/DB_PASSWORD/DB_NAME` 等变量，运行前先 `load_dotenv`。
+- 缺 `.env`（只有 `.env.example`）时**只读代码，不要安排"跑一下试试"**；`pytest agent_lab/tests` 是例外——它不连库不调模型，只要有依赖就能跑。
 - 大模型走阿里云百炼：LLM `qwen-plus`，Embedding `text-embedding-v3`；key 一律用环境变量 `DASHSCOPE_API_KEY` 读取（`os.getenv`）。
   **曾有真实 key 被硬编码 push 出去，已吊销** → 任何情况下不得把 key 写进源码。
-- 已装库：openai、chromadb、langchain、langchain-openai、langchain-chroma、langchain-text-splitters、langgraph、fastapi、uvicorn、streamlit。
+- 模型服务地址统一读 `DASHSCOPE_BASE_URL`（默认值 = 旧共享域名 `https://dashscope.aliyuncs.com/compatible-mode/v1`，不设置则行为不变）。
+  动因：阿里云公告该共享域名 **2026-09-30 起进入维护状态**（不再迭代新特性，现有服务不受影响），建议迁到业务空间专属域名
+  `https://{workspaceId}.{region}.maas.aliyuncs.com/compatible-mode/v1`。原先 8 个文件各写死一份 URL，迁移要改 8 处；现在只改环境变量。
+- **已装库（2026-09-22 按解释器实测，别当成"这台机器装了啥"）**：
+  | 解释器 | 项目二那套<br>openai/chromadb/langchain/langgraph/fastapi/uvicorn/streamlit | 项目一那套<br>pymysql/pytest |
+  |---|---|---|
+  | 系统 Python 3.14 | ✅ 全有 | ❌ 全缺 → **能跑项目二，跑不了项目一** |
+  | 上游项目的 `.venv`（3.12） | ✅ 全有 | ✅ 全有 → 跑项目一用它 |
+  | 另一个系统 Python 3.12 | ❌ 全缺 | ❌ 全缺 |
+
+  同一台机器上"跑不了"往往只是**解释器不对**，不是环境缺失。
 
 ## 本项目踩过的技术坑（写代码前先扫一眼）
 

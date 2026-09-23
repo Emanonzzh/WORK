@@ -34,6 +34,7 @@ import streamlit as st  # noqa: E402
 
 from agent_lab import report as report_mod  # noqa: E402
 from agent_lab.anomaly import detect  # noqa: E402
+from agent_lab.attribution import drill_down  # noqa: E402
 from agent_lab.db import query  # noqa: E402
 from agent_lab.tools import monthly_trend  # noqa: E402
 
@@ -60,6 +61,15 @@ def load_analysis(period_a: str, period_b: str, dimension: str) -> dict:
     这是 Streamlit 最重要的实践：**不缓存的话，每次点一下页面都会重跑全部查询**。
     """
     return report_mod.collect(period_a, period_b, dimension)
+
+
+@st.cache_data(ttl=600, show_spinner="正在下钻…")
+def load_drill(period_a: str, period_b: str, dimension: str, sub_dim: str) -> dict:
+    """两层下钻：先按 `dimension` 找最大分支，再进它内部按 `sub_dim` 拆。
+
+    每层保留 5 个分支用于展示；真正往下钻的是各层 |变化| 最大的那一个。
+    """
+    return drill_down(period_a, period_b, (dimension, sub_dim), top_n=5)
 
 
 @st.cache_data(ttl=600, show_spinner=False)
@@ -205,6 +215,38 @@ with tab_dim:
             st.plotly_chart(fig2)
 
     st.caption("说明：贡献占比之和会超过 100%，因为正负贡献会相互抵消 —— 这是贡献度的正常现象。")
+
+    st.divider()
+    st.markdown("#### 再钻一层：上一层最大的分支，内部是谁在动")
+    others = [d for d in DIMENSION_LABEL if d != dimension]
+    # 不用 format_func：AppTest 恢复不了这个不可序列化的回调，会退化成恒等函数，
+    # 于是"选项=中文标签、value=英文键"的控件在写回 widget state 时必然 ValueError。
+    # 直接把中文标签当选项值用，再映射回键，行为一致且可测。
+    sub_label = st.selectbox("第二层按什么拆", [DIMENSION_LABEL[d] for d in others], index=0,
+                             key=f"sub_dim_for_{dimension}")
+    sub_dim = next((k for k in others if DIMENSION_LABEL[k] == sub_label), others[0])
+    chain = load_drill(period_a, period_b, dimension, sub_dim)["chain"]
+    parent_row, level1 = chain[0]["top"][0], chain[1]
+    st.caption(
+        f"路径：全市场 Δ {chain[0]['subset_total_delta']:,.2f} → "
+        f"{DIMENSION_LABEL[dimension]}「{parent_row['value']}」Δ {parent_row['delta']:,.2f} → "
+        f"其内部按{DIMENSION_LABEL[sub_dim]}拆，共 {level1['groups']} 组"
+    )
+    closed = abs(level1["subset_total_delta"] - parent_row["delta"]) < 0.01
+    (st.success if closed else st.error)(
+        f"链条闭合校验：子层合计 Δ {level1['subset_total_delta']:,.2f} "
+        f"{'==' if closed else '!='} 父层该分支 Δ {parent_row['delta']:,.2f}"
+        f"　两层分解残差 {chain[0]['decompose_check']} / {level1['decompose_check']}"
+    )
+    sub_df = pd.DataFrame([{
+        "维度值": t["value"], "变化": t["delta"], "占本层%": t["share_of_subset_pct"],
+        f"{period_a} 订单": t["orders_a"], f"{period_b} 订单": t["orders_b"],
+    } for t in level1["top"]])
+    st.dataframe(sub_df, hide_index=True, column_config={
+        "变化": st.column_config.NumberColumn(format="%.2f"),
+        "占本层%": st.column_config.NumberColumn(format="%.2f%%"),
+    })
+    st.caption("注意：这些数字只在上一层选中的那个分支**内部**统计，是子集小计，不是全市场。")
 
 
 # ------------------------------------------------------------------ 页签 3：异常发现

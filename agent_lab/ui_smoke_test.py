@@ -27,6 +27,22 @@ def show(at: AppTest, title: str) -> None:
           f"提示 {len(at.info)} 条 | 报错 {len(at.error)} 条 | 成功 {len(at.success)} 条")
 
 
+def box_by_label(at: AppTest, label: str):
+    """按 label 找 selectbox；找不到就失败，**绝不静默跳过**。
+
+    为什么不用 `at.selectbox("标签")`：这个 Streamlit 版本不支持按 label 取，
+    用 try 兜住 KeyError 会让整条交互路径被跳过，而测试照样打印"通过" —— 假绿。
+    也不用位置索引 `at.selectbox[2]`：页面上新增一个 selectbox 就会整体错位
+    （实测过：加完"第二层按什么拆"之后，索引 2 从"下钻维度"变成了"对比基期"）。
+    """
+    for sb in at.selectbox:
+        if sb.label == label:
+            return sb
+    raise AssertionError(
+        f"找不到 label={label!r} 的 selectbox；现有：{[s.label for s in at.selectbox]}"
+    )
+
+
 def main() -> int:
     at = AppTest.from_file(str(APP), default_timeout=300)
     at.run()
@@ -40,24 +56,29 @@ def main() -> int:
     if len(at.error) > 0:
         failures.append(f"首次运行出现 {len(at.error)} 条 st.error（不该有）")
 
+    # 页签叫"维度下钻"，就得真有两层 —— 闭合校验那条 success 是名实相符的证据
+    if not any("闭合" in (s.value or "") for s in at.success):
+        failures.append("未渲染出多层下钻的闭合校验（页签名与实际内容不符）")
+
     # 交互路径 1：换成渠道维度（验证 selectbox 改变后仍能跑）
-    if len(at.selectbox) >= 3:
-        at.selectbox[2].select("channel").run()
-        show(at, "切换下钻维度 = channel")
-        if at.exception:
-            failures.append("切换维度后抛异常")
-        if len(at.error) > 0:
-            failures.append("切换维度后出现 st.error")
+    box_by_label(at, "下钻维度").select("channel").run()
+    show(at, "切换下钻维度 = channel")
+    if at.exception:
+        failures.append("切换维度后抛异常")
+    if len(at.error) > 0:
+        failures.append("切换维度后出现 st.error")
 
     # 交互路径 2：切到最早的可选月份（验证边界：最早月份也必须有基期可比）
-    if len(at.selectbox) >= 1:
-        at.selectbox[0].select(at.selectbox[0].options[0]).run()
-        show(at, f"切到最早的可选月份 = {at.selectbox[0].value}")
-        if at.exception:
-            failures.append("切换月份后抛异常")
-        if len(at.error) > 0:
-            failures.append(f"最早可选月份仍进错误态（{at.error[0].value}）—— "
-                            f"应保证所有可选项都有基期")
+    at = AppTest.from_file(str(APP), default_timeout=300)
+    at.run()
+    first_month = box_by_label(at, "分析月份").options[0]
+    box_by_label(at, "分析月份").select(first_month).run()
+    show(at, f"切到最早的可选月份 = {first_month}")
+    if at.exception:
+        failures.append("切换月份后抛异常")
+    if len(at.error) > 0:
+        failures.append(f"最早可选月份仍进错误态（{at.error[0].value}）—— "
+                        f"应保证所有可选项都有基期")
 
     print("\n" + "=" * 60)
     if failures:

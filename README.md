@@ -133,7 +133,7 @@ python agent_lab/p1_stress.py             # 6 场景故障注入压测
 | `agent_lab/api_smoke_test.py` | Python 客户端冒烟测试（7 项） |
 | `agent_lab/p1_react.py` | **手写 ReAct 循环**（不依赖框架） |
 | `agent_lab/p1_stress.py` | 6 场景故障注入压测 |
-| `agent_lab/代码导读.md` | 读码顺序 / 关键代码片段 / 面试"讲代码"路线 / 9 个追问 |
+| `agent_lab/代码导读.md` | 读码顺序 / 关键代码片段 / 面试"讲代码"路线 / 12 个追问 |
 | `agent_lab/FastAPI入门.md` | FastAPI 零基础入门（结合本项目代码） |
 | `docs/销售经营分析Agent_项目框架.md` | 项目一分层架构、双线设计、**明确列出的缺口** |
 

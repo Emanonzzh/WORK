@@ -95,8 +95,22 @@ def main() -> int:
     code, body = call("GET", "/reconciliation/1999-01")
     check("不存在的资源返回 404", code == 404, f"HTTP {code}（期望 404）")
 
+    print("\n[7] GET /attribution/{period} —— 多层下钻链条是否闭合 + 非法维度是否被挡")
+    code, body = call("GET", "/attribution/2025-11")
+    chain = body.get("chain", []) if isinstance(body, dict) else []
+    closed = (
+        code == 200 and len(chain) == 2
+        and abs(chain[1]["subset_total_delta"] - chain[0]["top"][0]["delta"]) < 0.01
+        and all(abs(s["decompose_check"]) < 1e-6 for s in chain)
+    )
+    check("下钻链闭合（子层 Δ == 父层被选中行 Δ）", closed,
+          f"HTTP {code} 层数={len(chain)} "
+          + (f"Δ0={chain[0]['subset_total_delta']} Δ1={chain[1]['subset_total_delta']}" if len(chain) == 2 else "链不完整"))
+    code, _ = call("GET", "/attribution/2025-11?levels=region,product")
+    check("非法维度被挡成 400", code == 400, f"HTTP {code}（期望 400）")
+
     if args.with_llm:
-        print("\n[7] POST /analyze —— 请求体模型 + 中文 UTF-8（关键：验证中文没被搞坏）")
+        print("\n[8] POST /analyze —— 请求体模型 + 中文 UTF-8（关键：验证中文没被搞坏）")
         code, body = call("POST", "/analyze",
                           {"question": "2025年11月的实付额是多少？", "max_steps": 4})
         answer = body.get("answer", "") if isinstance(body, dict) else str(body)

@@ -24,7 +24,7 @@
 
 | 文件 | 内容 |
 |---|---|
-| `api.py` | 6 个接口：`/health` `/metrics` `/anomalies` `/report/{period}` `/reconciliation/{period}` `/analyze` |
+| `api.py` | 7 个接口：`/health` `/metrics` `/anomalies` `/report/{period}` `/reconciliation/{period}` `/analyze` `/attribution/{period}` |
 | `api_smoke_test.py` | Python 客户端冒烟测试（7 项：含边界校验 422、404、中文 UTF-8） |
 | `streamlit_app.py` | **销售经营分析看板**（Streamlit + Plotly） |
 | `ui_smoke_test.py` | 用官方 `AppTest` 无头跑一遍看板（UI 层冒烟测试） |

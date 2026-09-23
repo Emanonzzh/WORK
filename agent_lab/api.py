@@ -45,6 +45,7 @@ from pydantic import BaseModel, Field  # noqa: E402
 
 from agent_lab import report as report_mod  # noqa: E402
 from agent_lab.anomaly import detect  # noqa: E402
+from agent_lab.attribution import drill_down  # noqa: E402
 from agent_lab.db import query  # noqa: E402
 from agent_lab.tools import METRICS, query_metrics  # noqa: E402
 
@@ -236,6 +237,27 @@ def analyze(req: AnalyzeRequest) -> dict:
         "elapsed_ms": result.elapsed_ms,
         "failure_modes": result.failure_modes,
     }
+
+
+# ------------------------------------------------------------------ 接口 7：多层下钻归因
+@app.get("/attribution/{period_b}", summary="多层下钻归因链（总量 → 平台 → 该平台内商品）")
+def get_attribution(
+    period_b: str,
+    period_a: str | None = None,
+    levels: str = Query("platform,product", description="逗号分隔的维度链，如 platform,product"),
+    top_n: int = Query(1, ge=1, le=3, description="每层继续往下钻的分支数"),
+) -> dict:
+    """逐层下钻：每层取 |delta| 最大的分支，作为下一层的过滤条件。
+
+    与 `/report` 的分工：这里**只跑分解**，不生成报告也不做对账，所以是快接口（每层两次 SQL）。
+    链条闭合判据：`chain[i].subset_total_delta` 必须等于 `chain[i-1].top[0].delta`，
+    且每层 `decompose_check` 为 0 —— 不成立就说明下钻链断了。
+    """
+    try:
+        return drill_down(period_a or _prev_month(period_b), period_b,
+                          tuple(levels.split(",")), top_n)
+    except Exception as exc:  # noqa: BLE001  含 ToolError：维度非法/层级重复/不成对都回 400
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 def _prev_month(period: str) -> str:

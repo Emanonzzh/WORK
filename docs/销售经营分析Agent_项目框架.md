@@ -13,7 +13,7 @@
 │ ① 交互层                                                      ✅     │
 │    agent_lab/streamlit_app.py 310 行 · 看板 5 页签：                  │
 │      量价归因(瀑布图) · 维度下钻 · 异常发现 · 报告与对账 · 自然语言问数 │
-│    agent_lab/api.py 251 行 · 6 条路由：                               │
+│    agent_lab/api.py 273 行 · 7 条路由：                               │
 │      GET  /health  /metrics  /anomalies                              │
 │          /report/{period_b}  /reconciliation/{period_b}              │
 │      POST /analyze   （唯一调 LLM 的入口）                            │
@@ -149,7 +149,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | `evaluate_anomaly.py` | 315 | 差分口径 + 事件化的 P/R/F1 评测 | ✅ |
 | `streamlit_app.py` | 310 | 看板 5 页签 | ✅ |
 | `anomaly.py` | 283 | 时间序列异常检测 | ✅ |
-| `api.py` | 251 | 6 条 HTTP 路由 | ✅ |
+| `api.py` | 273 | 7 条 HTTP 路由（09-24 加 `/attribution`） | ✅ |
 | `attribution.py` | 145 | **自动多层下钻**：每层取最大分支作为下一层 filter，一行 SQL 都不写 | ✅ 09-24 |
 | `p1_stress.py` | 144 | 6 场景故障注入 | ✅ |
 | `make_sample_data.py` | 144 | 样例数据生成器（同 schema 同量级，`--seed` 可复现） | ✅ 09-24 |

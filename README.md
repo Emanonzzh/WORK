@@ -44,7 +44,7 @@
 
 ```mermaid
 flowchart TB
-    U[用户问题] --> API[FastAPI<br/>6 个接口]
+    U[用户问题] --> API[FastAPI<br/>7 个接口]
     API --> AG[手写 ReAct 循环<br/>agent_lab/p1_react.py]
     AG --> TL[工具层<br/>量价分解 / 排名 / 趋势]
     TL --> DB[(MySQL<br/>102,287 行订单)]
@@ -129,7 +129,7 @@ python agent_lab/p1_stress.py             # 6 场景故障注入压测
 | `agent_lab/inject_anomalies.py` | 注入 6 个已知异常造评测集（副本表，不动原表） |
 | `agent_lab/evaluate_anomaly.py` | 差分口径 + 事件化后处理的 P/R/F1 评测 + 门槛扫描 + 误报归因 |
 | `agent_lab/report.py` | 报告生成 + **两道数字对账 + 对账器自测** |
-| `agent_lab/api.py` | FastAPI 6 接口（`/health` `/metrics` `/anomalies` `/report` `/reconciliation` `/analyze`） |
+| `agent_lab/api.py` | FastAPI 7 接口（`/health` `/metrics` `/anomalies` `/report` `/reconciliation` `/analyze` `/attribution`） |
 | `agent_lab/api_smoke_test.py` | Python 客户端冒烟测试（7 项） |
 | `agent_lab/p1_react.py` | **手写 ReAct 循环**（不依赖框架） |
 | `agent_lab/p1_stress.py` | 6 场景故障注入压测 |

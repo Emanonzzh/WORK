@@ -126,7 +126,7 @@ async def get_metrics(...):    # 异步函数
 
 ---
 
-## 四、我们这 6 个接口在干嘛
+## 四、我们这 7 个接口在干嘛
 
 | 方法 | 路径 | 作用 | 快慢 | 教学点 |
 |---|---|---|---|---|
@@ -136,6 +136,7 @@ async def get_metrics(...):    # 异步函数
 | GET | `/report/{period_b}` | 生成经营报告（Markdown） | **慢（~1s+）** | 慢接口 + 返回对账结论 |
 | GET | `/reconciliation/{period_b}` | 读对账产物文件 | 快 | 404 的用法 |
 | POST | `/analyze` | 自然语言分析（调 LLM） | **慢且花钱** | 请求体模型 + 成本保险丝 |
+| GET | `/attribution/{period_b}` | 多层下钻归因链 | 中（每层 2 次 SQL） | 返回体自带闭合判据，可自证 |
 
 看全清单最快的方式：`GET /openapi.json`（`/docs` 页面就是用它渲染的）。
 

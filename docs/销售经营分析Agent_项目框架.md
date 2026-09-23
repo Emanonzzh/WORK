@@ -45,7 +45,7 @@
 │ ⑤ 评测层                                                      ✅     │
 │    异常检测 P/R/F1（注入集 + 差分口径 + 事件化后处理）                 │
 │    数字对账双级（文本级 + 数据库级）+ **对账器自测**                   │
-│    pytest 230 项（不连库、不调模型）                                  │
+│    pytest 233 项（不连库、不调模型）                                  │
 │    6 场景故障注入压测 p1_stress.py 144 行                             │
 │    ⬜ 单轮基线 p0_single_call.py（"循环 vs 单轮"对比数字还没有）        │
 │    ⬜ 25 题评测集（单步10/多步10/开放5）                              │
@@ -153,7 +153,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | `inject_anomalies.py` | 126 | 注入 6 个已知异常，产 ground truth | ✅ |
 | `api_smoke_test.py` / `ui_smoke_test.py` | 120/73 | 接口与 UI 冒烟 | ✅ |
 | `db.py` | 69 | 统一连接 | ✅ |
-| `tests/` | 892（5 文件 56 个 test 函数） | 单测，不连库不调模型 | ✅ **230 项，09-22 复跑通过** |
+| `tests/` | 892（5 文件 56 个 test 函数） | 单测，不连库不调模型 | ✅ **233 项，09-22 复跑通过** |
 | `attribution.py` | — | 自动多层下钻（总量→平台→商品→时间） | ⬜ 单维分解已有，**串成自动链路缺** |
 | `p0_single_call.py` | — | 单轮调用基线 | ⬜ |
 | 25 题评测集 | — | 回归评测 | ⬜ |
@@ -170,7 +170,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | LLM | DeepSeek（OpenAI 兼容协议，`deepseek-chat`），key 走 `.env` | ✅ |
 | 服务 | FastAPI + Pydantic 响应模型；`def` 而非 `async def`（同步阻塞丢线程池） | ✅ 本机可跑 |
 | 前端 | Streamlit + Plotly | ✅ |
-| 测试 | pytest 230 项 + 官方 `AppTest` UI 冒烟 + 接口冒烟 | ✅ |
+| 测试 | pytest 233 项 + 官方 `AppTest` UI 冒烟 + 接口冒烟 | ✅ |
 | 编排 | LangGraph | ⬜ **本项目未用**（别和另一个项目混着说） |
 | 部署 | Docker Compose 7 服务（存量） | 🟡 未端到端跑过 |
 | CI | GitHub Actions | ⬜ |
@@ -187,7 +187,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 6. **为什么不硬塞 RAG？** 结构化数据分析的正确工具是 SQL 和代码。RAG 在本项目只保留一个用途：口径说明与政策依据的引用。
 7. **为什么砍掉区域/销售员维度？** 数据里根本没有这两个字段（能力盘点实测）。不做假装有数据的分析。
 8. **为什么 `max_steps` 要是参数而不是模块常量？** 见第九节缺陷 3——这是本项目最能讲的一个。
-9. **为什么"测试通过"本身不是证据？** 除非它曾经失败过。把修复临时还原重跑 = 15 failed + 1 collection error；恢复后 = 230 passed。falsification 才是测试有没有价值的分界线。
+9. **为什么"测试通过"本身不是证据？** 除非它曾经失败过。把修复临时还原重跑 = 15 failed + 1 collection error；恢复后 = 233 passed。falsification 才是测试有没有价值的分界线。
 
 ---
 
@@ -234,7 +234,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | 对账器自测 | 注入假数字 `999,999.99` → `caught: true` | 同上（验证了验证器本身） |
 | 数据库级复算 | `all_ok: true`，逐指标 `abs_diff = 0.0` | 同上 |
 | 量价分解闭合 | `total_decompose_check = 0.0` | 09-22 本机实跑复核 |
-| 单元测试 | **230 passed / 0 failed / 0.34s** | 09-22 本机复跑（不连库、不调模型） |
+| 单元测试 | **233 passed / 0 failed / 0.36s** | 09-23 本机复跑（不连库、不调模型）。新增 3 条连接层防回退断言 `tests/test_layering.py`，**已反证**：把 `pymysql.connect(` 重新塞回 `tools.py` 后该测试确实变红 |
 
 **已知局限（面试主动说，别等被问）**：
 ① 注入异常是人工构造的，幅度偏理想化，真实异常更隐蔽；
@@ -252,7 +252,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | **P0** | `p0_single_call.py` 单轮基线 + 25 题评测集，跑出"循环 vs 单轮"对比 | 半天 | 简历上**唯一还没有的对比数字**；数据、模型、工具今晚全就绪 |
 | ~~P0~~ ✅ | ~~让公开仓库能被别人跑起来~~ **09-23 已做**：`sql/01_create_table.sql` + 样例生成器 + INSERT 载入器 + README 三步 | 已交付 | 实测跑通到 KPI 层；`LOAD DATA` 那条因需全局 FILE 权限而放弃（缺权限回 1045，易误判成密码错） |
 | P1 | 自动多层下钻（把单维分解串成 总量→平台→商品→时间） | 半天 | 简历写了"下钻"，现在只有单维 |
-| P1 | GitHub Actions 跑 pytest | 1 小时 | 230 项不连库不调模型，**天生适合 CI**，成本极低 |
+| P1 | GitHub Actions 跑 pytest | 1 小时 | 233 项不连库不调模型，**天生适合 CI**，成本极低 |
 | P2 | Compose 端到端 | 半天~1天 | 卡在网络与 Docker Desktop；做完才能改"已容器化"的表述 |
 | P2 | README 三张演示截图 | 30 分钟 | 公网地址无 TLS，手机打开会失败，截图是兜底 |
 | P3 | HITL 审批 / 多 Agent / 行级权限 | — | 面试谈资，非必需 |

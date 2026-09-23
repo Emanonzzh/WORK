@@ -19,6 +19,11 @@ from streamlit.testing.v1 import AppTest  # noqa: E402
 
 
 def show(at: AppTest, title: str) -> None:
+    """打印这一轮运行的状态摘要（异常数 + 各类元素数量）。
+
+    之所以把元素数量也打出来：本文件曾经因为 `try/except KeyError` 静默跳过整条交互路径
+    却仍然打印"通过"。元素计数能让人一眼看出"这一轮到底渲染了没有"，不至于被假绿骗过。
+    """
     print(f"\n=== {title} ===")
     print(f"  异常: {len(at.exception)}")
     for e in at.exception:
@@ -44,6 +49,12 @@ def box_by_label(at: AppTest, label: str):
 
 
 def main() -> int:
+    """无头跑一遍看板：首次渲染 + 两条交互路径（切维度、切最早月份），任一异常即失败。
+
+    为什么必须有：Streamlit 脚本是**运行时才执行**的，`py_compile` 通过不代表
+    `st.*` 的用法对（参数不支持、控件 key 与选项集冲突、缓存函数签名问题都只在真跑时炸）。
+    今晚那个"切换下钻维度就整页 ValueError"的 bug，就是这里抓出来的，读代码读不出来。
+    """
     at = AppTest.from_file(str(APP), default_timeout=300)
     at.run()
     show(at, "首次运行（默认：最近月 vs 上月，平台维度）")

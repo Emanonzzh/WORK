@@ -94,6 +94,7 @@ def load(csv_path: Path, table: str, truncate: bool) -> int:
 
 
 def main() -> int:
+    """命令行入口：读样例 CSV 灌进目标表，打印写入行数。"""
     ap = argparse.ArgumentParser(description="把样例 CSV 灌进指定表（只需 INSERT 权限）")
     ap.add_argument("--csv", type=Path, default=Path("sample_orders.csv"))
     ap.add_argument("--table", default="orders", help="目标表名，默认 orders")

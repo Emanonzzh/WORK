@@ -53,6 +53,7 @@ YEAR_DAYS = 365
 
 
 def _pick_platform(rng: random.Random) -> str:
+    """按 PLATFORMS 的权重抽一个平台（微信公众号与 APP 占大头，长尾平台偶尔出现）。"""
     return rng.choices([p for p, _ in PLATFORMS], weights=[w for _, w in PLATFORMS], k=1)[0]
 
 
@@ -62,6 +63,7 @@ def _amount(rng: random.Random) -> float:
 
 
 def _order_time(rng: random.Random) -> datetime:
+    """在 2025 年内随机取一个下单时刻；时段按电商作息加权（9 点前稀疏）。"""
     day = YEAR_START + timedelta(days=rng.randrange(YEAR_DAYS))
     # 下单集中在 9~23 点，与真实电商作息一致
     hour = rng.choices(range(24), weights=[1 if h < 9 else 3 for h in range(24)])[0]
@@ -71,6 +73,11 @@ def _order_time(rng: random.Random) -> datetime:
 
 
 def build_rows(n: int, seed: int) -> list[dict[str, object]]:
+    """生成 n 行样例订单。同一个 seed 必然得到同一份数据，便于复现与对账。
+
+    勾稽关系与真实数据一致：`付款金额 = 订单金额 - 优惠金额`，
+    所以折扣率 = SUM(优惠)/SUM(订单金额)、退款金额率都能由这些列直接算出。
+    """
     rng = random.Random(seed)
     rows: list[dict[str, object]] = []
     for i in range(1, n + 1):
@@ -116,6 +123,7 @@ def write_csv(rows: list[dict[str, object]], out: Path) -> None:
 
 
 def main() -> int:
+    """命令行入口：生成样例 CSV，并打印客单价/退款率/折扣率供人自查分布量级。"""
     ap = argparse.ArgumentParser(description="生成与真实订单同 schema 的样例数据（随机数，不可用于复算结论）")
     ap.add_argument("--rows", type=int, default=1000, help="行数，默认 1000")
     ap.add_argument("--seed", type=int, default=2025, help="随机种子，默认 2025（同种子同输出）")

@@ -48,11 +48,21 @@ def call(method: str, path: str, payload: dict | None = None, timeout: int = 120
 
 
 def check(name: str, ok: bool, detail: str) -> None:
+    """记录一条检查结果并立即打印。
+
+    刻意**不在这里中断**：一次跑完把所有失败都暴露出来，比第一处就退出更有用；
+    退出码由 main() 末尾按汇总结果决定。
+    """
     results.append((name, ok, detail))
     print(f"  {PASS if ok else FAIL} {name} — {detail}")
 
 
 def main() -> int:
+    """跑一遍接口冒烟并给出退出码。**需要先起 api 服务**，默认一条都不花钱（/analyze 要 `--with-llm`）。
+
+    与 pytest 的分工：pytest 测纯逻辑且不碰外部依赖；这里测的是"服务真的起着、路由真的通、
+    状态码与响应体真的对"。两者不能互相替代。
+    """
     global BASE  # 允许用 --base 覆盖服务地址（必须写在任何引用之前）
     ap = argparse.ArgumentParser()
     ap.add_argument("--with-llm", action="store_true", help="额外测 POST /analyze（调 LLM，会花钱）")

@@ -97,6 +97,12 @@ class AnalyzeResponse(BaseModel):
 
 
 class HealthResponse(BaseModel):
+    """/health 的响应契约。
+
+    存在的原因是本项目真踩过"HTTP 200 但服务是坏的"：端口被别的进程通配抢占时，
+    探活请求拿到 200 却是别人的 HTML。所以健康检查必须**校验响应体字段**，
+    而这个模型就是逼着调用方去看 `status` / `database`，而不是只看状态码。
+    """
     status: str
     database: str
     orders_rows: int

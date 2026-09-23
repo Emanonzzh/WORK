@@ -125,6 +125,7 @@ def _text_report(drill: dict[str, Any]) -> str:
 
 
 def main() -> int:
+    """命令行入口：跑一次下钻并把链条打成可读文本（ToolError 回退出码 1 而不是抛栈）。"""
     ap = argparse.ArgumentParser(description="销售经营指标的多层下钻")
     ap.add_argument("--period-a", default="2025-10")
     ap.add_argument("--period-b", default="2025-11")

@@ -79,6 +79,11 @@ def load_sparkline(metric: str) -> list[float]:
 
 
 def prev_month(period: str) -> str:
+    """'2025-11' → '2025-10'，1 月回退到上一年 12 月。
+
+    ⚠️ 与 `api.py::_prev_month` 是**同一逻辑的两份实现**（这里没走 import 是为了避免
+    看板反向依赖 FastAPI 模块）。属于已知重复，改动时两处要一起改。
+    """
     y, m = int(period[:4]), int(period[5:7])
     return f"{y - 1}-12" if m == 1 else f"{y}-{m - 1:02d}"
 

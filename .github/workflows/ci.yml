@@ -28,9 +28,13 @@ jobs:
           python-version: "3.12"
 
       - name: Install test dependencies
-        # 刻意不装 fastapi/streamlit/plotly：单测不碰接口层与看板层，
-        # 装得越少，"测试其实依赖了外部服务"这类问题越早暴露。
-        run: python -m pip install --upgrade pip pytest pymysql python-dotenv jinja2
+        # 为什么是这五个而不是 requirements.txt 那一整摞：
+        # 245 项里有 243 项只碰纯逻辑；剩下 2 项（test_react_loop 的并发步数上限契约测试）
+        # 会 `from agent_lab import api` 直接调 api.analyze()，因此需要 fastapi ——
+        # 但它们不调 LLM（conftest 把 urlopen 拦了），所以仍然不需要密钥与服务。
+        # 刻意不装 streamlit/plotly/langchain：装得越少，"测试其实依赖了外部服务"越早暴露。
+        # ⚠️ 本行首次 CI 实跑就是因为它漏了 fastapi 而红，别照着本地环境想当然。
+        run: python -m pip install --upgrade pip pytest pymysql python-dotenv jinja2 fastapi
 
       - name: Run unit tests
         run: python -m pytest agent_lab/tests -q

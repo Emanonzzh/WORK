@@ -1,0 +1,36 @@
+# 这个 workflow 只跑 agent_lab/tests。那 245 项测试**不连 MySQL、不调 LLM、不发网络请求**
+# （conftest.py 用 autouse 夹具把 pymysql.connect 和 urllib.request.urlopen 换成"一调用就报错"），
+# 所以 CI 里不需要起数据库、不需要任何密钥，本地 0.4 秒跑完。
+#
+# 这同时也是这套测试的价值证明：一个"必须有 MySQL 才能跑"的测试套件，
+# 在 CI 里、在面试官的机器上都是跑不起来的 —— 那是负债不是资产。
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        # 刻意不装 fastapi/streamlit/plotly：单测不碰接口层与看板层，
+        # 装得越少，"测试其实依赖了外部服务"这类问题越早暴露。
+        run: python -m pip install --upgrade pip pytest pymysql python-dotenv jinja2
+
+      - name: Run unit tests
+        run: python -m pytest agent_lab/tests -q

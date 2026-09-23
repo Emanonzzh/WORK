@@ -25,6 +25,7 @@ from agent_lab.tools import (
     _check_dimension,
     _check_metric,
     _check_month,
+    contribution_breakdown,
 )
 
 
@@ -148,3 +149,41 @@ def test_no_cost_or_profit_metric_exists():
     """反向断言：明确"算不出毛利"这件事，避免以后有人偷偷加一个假的口径。"""
     assert "profit" not in METRICS
     assert "cost" not in METRICS
+
+
+# ---------------------------------------------------------------- 下钻过滤守卫
+# 这三条都必须在**触库之前**抛出 —— 本套件的硬保证是不连 MySQL，
+# 一旦哪天它们改成"先查库再报错"，conftest 的拦截会让它们立刻变红。
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"filter_dimension": "platform"},                       # 只给列不给值
+        {"filter_value": "APP"},                                # 只给值不给列
+    ],
+)
+def test_filter_must_be_given_as_a_pair(kwargs):
+    with pytest.raises(ToolError, match="同时"):
+        contribution_breakdown("product", "2025-10", "2025-11", **kwargs)
+
+
+def test_filter_dimension_must_be_whitelisted():
+    with pytest.raises(ToolError, match="未知维度"):
+        contribution_breakdown(
+            "product", "2025-10", "2025-11", filter_dimension="region", filter_value="华东"
+        )
+
+
+def test_filter_dimension_cannot_equal_dimension():
+    """同维度过滤会让每个分组只剩一个值，分解退化成恒等式 —— 必须拦住。"""
+    with pytest.raises(ToolError, match="不能等于"):
+        contribution_breakdown(
+            "platform", "2025-10", "2025-11", filter_dimension="platform", filter_value="APP"
+        )
+
+
+def test_tool_catalog_exposes_filter_params():
+    """新增参数必须出现在给模型看的说明书里，否则模型永远不知道该用它，下钻等于没做。"""
+    from agent_lab.tools import TOOL_SPECS
+
+    params = TOOL_SPECS["contribution_breakdown"]["params"]
+    assert "filter_dimension" in params and "filter_value" in params

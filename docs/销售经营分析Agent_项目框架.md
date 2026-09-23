@@ -2,7 +2,7 @@
 
 > ⚠️ **编号提醒**：简历上这是**项目一**；仓库早期文档因历史原因称它"项目二"。本文一律用项目名，不提编号。
 > 状态标注：✅ 已实现**并有落盘产物可查** ｜ 🟡 代码在但未端到端验证 ｜ ⬜ 不存在
-> **最后核对：2026-09-23**（按磁盘文件 + 实跑结果核对，非记忆。核对方法见**第十二节**，照着复跑一遍即可）
+> **最后核对：2026-09-24**（按磁盘文件 + 实跑结果核对，非记忆。核对方法见**第十二节**，照着复跑一遍即可）
 
 ---
 
@@ -33,7 +33,8 @@
 │      contribution_breakdown（量价三因子分解，decompose 在模块级可测）  │
 │    anomaly.py 283 行 · 同星期几基线 + 滚动中位数 + MAD 稳健 z(3.5)     │
 │      + 最小支持度 + 脉冲/漂移两类                                     │
-│    归因下钻：DIMENSIONS 白名单 3 维（platform/channel/product）        │
+│    归因下钻：`attribution.py` 145 行 —— 总量→平台→该平台的商品，逐层闭合  ✅ │
+│      （DIMENSIONS 白名单 3 维：platform/channel/product）                    │
 │    report.py + templates/business_report.md.j2（Jinja2 → Markdown）   │
 ├─────────────────────────────────────────────────────────────────────┤
 │ ④ 数据层                                                      ✅     │
@@ -45,7 +46,7 @@
 │ ⑤ 评测层                                                      ✅     │
 │    异常检测 P/R/F1（注入集 + 差分口径 + 事件化后处理）                 │
 │    数字对账双级（文本级 + 数据库级）+ **对账器自测**                   │
-│    pytest 233 项（不连库、不调模型）                                  │
+│    pytest 245 项（不连库、不调模型）                                  │
 │    6 场景故障注入压测 p1_stress.py 144 行                             │
 │    ⬜ 单轮基线 p0_single_call.py（"循环 vs 单轮"对比数字还没有）        │
 │    ⬜ 25 题评测集（单步10/多步10/开放5）                              │
@@ -142,19 +143,21 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 
 | 模块 | 行数 | 职责 | 现状 |
 |---|---|---|---|
-| `tools.py` | 466 | 业务问题 → 只读 SQL，口径统一 | ✅ |
+| `tools.py` | 487 | 业务问题 → 只读 SQL，口径统一；**09-24 加维度内过滤**（下钻的前提） | ✅ |
 | `p1_react.py` | 411 | 多步编排：模型决定查什么、查几次 | ✅ |
 | `report.py` | 432 | 报告渲染 + **双级对账** + 对账器自测 | ✅ |
 | `evaluate_anomaly.py` | 315 | 差分口径 + 事件化的 P/R/F1 评测 | ✅ |
 | `streamlit_app.py` | 310 | 看板 5 页签 | ✅ |
 | `anomaly.py` | 283 | 时间序列异常检测 | ✅ |
 | `api.py` | 251 | 6 条 HTTP 路由 | ✅ |
+| `attribution.py` | 145 | **自动多层下钻**：每层取最大分支作为下一层 filter，一行 SQL 都不写 | ✅ 09-24 |
 | `p1_stress.py` | 144 | 6 场景故障注入 | ✅ |
+| `make_sample_data.py` | 144 | 样例数据生成器（同 schema 同量级，`--seed` 可复现） | ✅ 09-24 |
 | `inject_anomalies.py` | 126 | 注入 6 个已知异常，产 ground truth | ✅ |
+| `load_sample_data.py` | 110 | 样例 CSV → 表（走 INSERT，不需要全局 FILE 权限） | ✅ 09-24 |
 | `api_smoke_test.py` / `ui_smoke_test.py` | 120/73 | 接口与 UI 冒烟 | ✅ |
-| `db.py` | 69 | 统一连接 | ✅ |
-| `tests/` | 892（5 文件 56 个 test 函数） | 单测，不连库不调模型 | ✅ **233 项，09-22 复跑通过** |
-| `attribution.py` | — | 自动多层下钻（总量→平台→商品→时间） | ⬜ 单维分解已有，**串成自动链路缺** |
+| `db.py` | 72 | 统一连接（09-23 起 6 个模块真的都走它） | ✅ |
+| `tests/` | 1092（7 文件 **70** 个 test 函数） | 单测，不连库不调模型 | ✅ **245 项，09-24 复跑通过** |
 | `p0_single_call.py` | — | 单轮调用基线 | ⬜ |
 | 25 题评测集 | — | 回归评测 | ⬜ |
 
@@ -170,7 +173,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | LLM | DeepSeek（OpenAI 兼容协议，`deepseek-chat`），key 走 `.env` | ✅ |
 | 服务 | FastAPI + Pydantic 响应模型；`def` 而非 `async def`（同步阻塞丢线程池） | ✅ 本机可跑 |
 | 前端 | Streamlit + Plotly | ✅ |
-| 测试 | pytest 233 项 + 官方 `AppTest` UI 冒烟 + 接口冒烟 | ✅ |
+| 测试 | pytest 245 项 + 官方 `AppTest` UI 冒烟 + 接口冒烟 | ✅ |
 | 编排 | LangGraph | ⬜ **本项目未用**（别和另一个项目混着说） |
 | 部署 | Docker Compose 7 服务（存量） | 🟡 未端到端跑过 |
 | CI | GitHub Actions | ⬜ |
@@ -187,7 +190,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 6. **为什么不硬塞 RAG？** 结构化数据分析的正确工具是 SQL 和代码。RAG 在本项目只保留一个用途：口径说明与政策依据的引用。
 7. **为什么砍掉区域/销售员维度？** 数据里根本没有这两个字段（能力盘点实测）。不做假装有数据的分析。
 8. **为什么 `max_steps` 要是参数而不是模块常量？** 见第九节缺陷 3——这是本项目最能讲的一个。
-9. **为什么"测试通过"本身不是证据？** 除非它曾经失败过。把修复临时还原重跑 = 15 failed + 1 collection error；恢复后 = 233 passed。falsification 才是测试有没有价值的分界线。
+9. **为什么"测试通过"本身不是证据？** 除非它曾经失败过。把修复临时还原重跑 = 15 failed + 1 collection error；恢复后 = 245 passed。falsification 才是测试有没有价值的分界线。
 
 ---
 
@@ -195,7 +198,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 
 | 类别 | 内容 |
 |---|---|
-| **我新增** | `agent_lab/` **全部 18 个 py 文件 / 3903 行**（源码 3011 + 测试 892）、`templates/business_report.md.j2`、`sql/02_import_data.windows.sql`（仅改路径，原文件未动）、本机 MySQL 8.4.9 便携版部署与 102,287 行导入、`.env` 配置 |
+| **我新增** | `agent_lab/` **全部 23 个 py 文件 / 4526 行**（非测试 16 个 3434 行 + 测试 7 个 1092 行）、`sql/01_create_table.sql`（署名摘自上游）与 `sql/02_import_data.sample.sql`、`templates/business_report.md.j2`、`sql/02_import_data.windows.sql`（仅改路径，原文件未动）、本机 MySQL 8.4.9 便携版部署与 102,287 行导入、`.env` 配置 |
 | **我修改** | `ai-ecommerce-assistant/eval/run_sql_eval.py`（修 `.env` 加载顺序 bug：先读 `os.environ` 才 `load_dotenv`，CLI 裸环境必报"Key 未配置"） |
 | **存量复用（不是我写的）** | `agent_core/*`、`backend/*`(32 接口)、`ai-ecommerce-assistant/*`、`streamlit_app.py`(存量 BI)、`docker-compose.yml`、`deploy/*`、`sql/01~03`、`data/cleaned_orders.csv` |
 
@@ -234,7 +237,8 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | 对账器自测 | 注入假数字 `999,999.99` → `caught: true` | 同上（验证了验证器本身） |
 | 数据库级复算 | `all_ok: true`，逐指标 `abs_diff = 0.0` | 同上 |
 | 量价分解闭合 | `total_decompose_check = 0.0` | 09-22 本机实跑复核 |
-| 单元测试 | **233 passed / 0 failed / 0.36s** | 09-23 本机复跑（不连库、不调模型）。新增 3 条连接层防回退断言 `tests/test_layering.py`，**已反证**：把 `pymysql.connect(` 重新塞回 `tools.py` 后该测试确实变红 |
+| 单元测试 | **245 passed / 0 failed / 0.36s** | 09-24 本机复跑（不连库、不调模型）。含 3 条连接层防回退断言 `tests/test_layering.py`，**已反证**：把 `pymysql.connect(` 重新塞回 `tools.py` 后该测试确实变红 |
+| 多层下钻链条闭合 | 全市场 Δ 1,389,478.21 → 微信公众号 Δ **776,684.70**（占本层 55.9%）→ 该平台内 992 个商品，子层 Δ **同为 776,684.70** | 09-24 真库实跑；判据"子层 Δ == 父层被选中那一行的 delta"由 `tests/test_attribution.py` 用假工具钉住 |
 
 **已知局限（面试主动说，别等被问）**：
 ① 注入异常是人工构造的，幅度偏理想化，真实异常更隐蔽；
@@ -251,8 +255,8 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 |---|---|---|---|
 | **P0** | `p0_single_call.py` 单轮基线 + 25 题评测集，跑出"循环 vs 单轮"对比 | 半天 | 简历上**唯一还没有的对比数字**；数据、模型、工具今晚全就绪 |
 | ~~P0~~ ✅ | ~~让公开仓库能被别人跑起来~~ **09-23 已做**：`sql/01_create_table.sql` + 样例生成器 + INSERT 载入器 + README 三步 | 已交付 | 实测跑通到 KPI 层；`LOAD DATA` 那条因需全局 FILE 权限而放弃（缺权限回 1045，易误判成密码错） |
-| P1 | 自动多层下钻（把单维分解串成 总量→平台→商品→时间） | 半天 | 简历写了"下钻"，现在只有单维 |
-| P1 | GitHub Actions 跑 pytest | 1 小时 | 233 项不连库不调模型，**天生适合 CI**，成本极低 |
+| ~~P1~~ ✅ | ~~自动多层下钻~~ **09-24 已做**：`attribution.drill_down` + `tools` 的维度内过滤参数 | 已交付 | 链条闭合性有测试钉住（假工具驱动）+ 真库不变量：子层 Δ 与父层被选中行逐分不差 |
+| P1 | GitHub Actions 跑 pytest | 1 小时 | 245 项不连库不调模型，**天生适合 CI**，成本极低 |
 | P2 | Compose 端到端 | 半天~1天 | 卡在网络与 Docker Desktop；做完才能改"已容器化"的表述 |
 | P2 | README 三张演示截图 | 30 分钟 | 公网地址无 TLS，手机打开会失败，截图是兜底 |
 | P3 | HITL 审批 / 多 Agent / 行级权限 | — | 面试谈资，非必需 |
@@ -285,6 +289,11 @@ import tools; c=tools._connect().cursor(); c.execute('SELECT COUNT(*) AS c FROM 
 # ④ 样例数据链路（不需要真实数据；本仓库自带的可复现路径）
 <venv>/Scripts/python.exe agent_lab/make_sample_data.py --rows 1000 --out sample_orders.csv
 <venv>/Scripts/python.exe agent_lab/load_sample_data.py --csv sample_orders.csv --table <临时表>
+
+# ⑤ 多层下钻（判据：第 1 层的 subset_total_delta 必须等于第 0 层被选中那一行的 delta）
+cd agent_lab && <venv>/Scripts/python.exe -c "
+from dotenv import load_dotenv; load_dotenv(r'F:\Python\gongc\ai-commerce-intelligence-platform\.env')
+from agent_lab import attribution as at; print(at._text_report(at.drill_down('2025-10','2025-11')))"
 ```
 
 ⚠️ 不 `load_dotenv` 就连接，会以 OS 用户名 + 空密码报 **1045 Access denied**——这是配置缺失，不是数据丢了。
@@ -307,3 +316,12 @@ import tools; c=tools._connect().cursor(); c.execute('SELECT COUNT(*) AS c FROM 
 "我新增 `agent_lab/` 全部 4 个文件（786 行）" → 实际 **18 个文件 3903 行**。
 另外补上两条上一版没写的事实：主线**并未使用 LangGraph**；存量文件**不在本仓库**，
 导致公开仓库无法独立运行（已列为 P0 缺口）。
+
+### 09-23 ~ 09-24 这一轮又做了什么
+
+统一连接层（`tools.py` 收进 `db.connect`，净 −10 行）、可复现性（建表 SQL + 样例生成器 + INSERT 载入器 +
+README 三步）、多层下钻（`attribution.drill_down` + `tools` 的维度内过滤参数）。
+测试 230 → **245**，文件 18 → **23**，行数 3903 → **4526**。
+
+上一版"说对了的 3 项缺口"，现在**只剩 2 项**：`p0_single_call.py` 单轮基线、25 题评测集。
+`attribution.py` 已交付。**排期请按第十一节的当前状态，不要按这段历史叙述。**

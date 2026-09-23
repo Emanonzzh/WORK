@@ -8,7 +8,7 @@
 | 目录 | 内容 |
 |---|---|
 | `agent_lab/` | **项目一**：销售经营分析 Agent（FastAPI + 手写 ReAct + 量价三因子分解 + 异常检测 + 报告数字对账） |
-| `agent_lab/tests/` | 233 项 pytest 单测，**不需要 MySQL、不需要 LLM**，约 0.35 秒跑完（数字以 `python -m pytest -q` 的输出为准，别信文档里的快照） |
+| `agent_lab/tests/` | 245 项 pytest 单测，**不需要 MySQL、不需要 LLM**，约 0.35 秒跑完（数字以 `python -m pytest -q` 的输出为准，别信文档里的快照） |
 | `day19_sqlite.py` … `day24_analysis.py`、`day21.py` | **项目二**：遥感监测智能问答 Agent（RAG + 三工具 LangGraph Agent）的演进过程与成品 |
 | `rag_eval.py` / `rag_eval_questions.py` | 项目二的 RAG 检索评测脚本与 12 题测试集 |
 | `monitoring.db`、`*.txt`、`*.json` | 项目二使用的真实数据与知识库 |
@@ -37,7 +37,7 @@
 ## 已修过的真 bug（可作为技术讨论的入口）
 
 1. **`/analyze` 全局状态并发竞态**：原实现临时改写模块级 `MAX_STEPS` 再还原，而同步 `def` 接口跑在线程池里 → 并发请求互相污染步数上限（会多烧 token）。改为 `run_agent(max_steps=...)` 请求级参数，模块常量退化为默认值。
-   **反证过**：把修复临时还原后重跑 = 15 failed + 1 collection error；恢复后 = 233 passed。
+   **反证过**：把修复临时还原后重跑 = 15 failed + 1 collection error；恢复后 = 245 passed。
 2. **`_check_date` 只校验格式不校验语义**：原来只判 `day ∈ 01~31`，`2025-02-31`、`2025-04-31` 被放行 → 改用 `calendar.monthrange` 按当月实际天数校验（闰年交给标准库）。
 3. **`decompose` 原是嵌套函数**（import 不到 = 不可测）→ 提到模块级，并断言三因子加总闭合为 `0.0`。
 4. **端口 8000 被静默抢占**：`agent_lab/api.py` 的 `PORT` 从 8000 改为 8010。原因是本机 `CLodopPrint32.exe`（打印控件，开机自启）绑 `0.0.0.0:8000`；Windows 仍允许我们再绑 `127.0.0.1:8000`，uvicorn 照常打印 "running on 127.0.0.1:8000"，但请求全被那条通配 socket 抢走——`/docs` 返回打印控件页面，`/health` 返回 **HTTP 200 + HTML**。旧启动脚本只判断"端口是否在监听"，于是拿这个 200 宣布启动成功。

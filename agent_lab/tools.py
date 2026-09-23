@@ -292,7 +292,13 @@ def decompose(rev0: float, n0: int, rev1: float, n1: int) -> tuple[float, float,
     return volume, price, inter
 
 
-def contribution_breakdown(dimension: str, period_a: str, period_b: str) -> dict:
+def contribution_breakdown(
+    dimension: str,
+    period_a: str,
+    period_b: str,
+    filter_dimension: str | None = None,
+    filter_value: str | None = None,
+) -> dict:
     """对比两个自然月的**量价结构分解 + 贡献度**（回答"为什么涨/跌"的核心工具）。
 
     数学（Revenue = 订单数 N × 客单价 AOV）：
@@ -300,24 +306,48 @@ def contribution_breakdown(dimension: str, period_a: str, period_b: str) -> dict
            + N0·(AOV1-AOV0)      价效应
            + (N1-N0)·(AOV1-AOV0) 交互项
     三项**精确加总等于 ΔR**（tools 里做了断言校验，误差 < 1e-6）。
+
+    可选过滤 `filter_dimension` + `filter_value`：只看某个维度值**内部**的分解，
+    这是多层下钻（总量 → 平台 → 该平台的商品）的前提。
+    例：`dimension="product", filter_dimension="platform", filter_value="APP"`
+    = "只看 APP 这个平台里，各商品分别贡献了多少变化"。
     """
     _check_dimension(dimension)
     _check_month(period_a, "period_a")
     _check_month(period_b, "period_b")
+    if (filter_dimension is None) != (filter_value is None):
+        raise ToolError(
+            "filter_dimension 与 filter_value 必须同时提供或同时省略，"
+            f"收到 filter_dimension={filter_dimension!r} filter_value={filter_value!r}"
+        )
+    if filter_dimension is not None:
+        _check_dimension(filter_dimension)
+        if filter_dimension == dimension:
+            raise ToolError(
+                f"filter_dimension 不能等于 dimension（都填 '{dimension}' 会让每组只剩一个值，分解无意义）。"
+                "想看某维度值内部的结构，请换一个更细的 dimension。"
+            )
 
     col = DIMENSIONS[dimension]
+    fcol = DIMENSIONS[filter_dimension] if filter_dimension is not None else None
 
     def agg(period: str) -> dict[str, dict]:
         """按维度聚合某一期的实付额与订单数 → {维度值: {rev, n}}。"""
+        where = "DATE_FORMAT(order_date, '%%Y-%%m') = %s"
+        args: list[Any] = [period]
+        if fcol is not None:
+            # 列名只可能来自 DIMENSIONS 白名单（不是用户输入），值一律走占位符
+            where += f" AND {fcol} = %s"
+            args.append(filter_value)
         rows = _rows(
             f"""
             SELECT COALESCE({col}, '未知') AS dim_value,
                    SUM(payment_amount) AS rev, COUNT(*) AS n
             FROM orders
-            WHERE DATE_FORMAT(order_date, '%%Y-%%m') = %s
+            WHERE {where}
             GROUP BY dim_value
             """,
-            (period,),
+            tuple(args),
         )
         return {r["dim_value"]: {"rev": float(r["rev"] or 0), "n": int(r["n"] or 0)} for r in rows}
 
@@ -354,6 +384,7 @@ def contribution_breakdown(dimension: str, period_a: str, period_b: str) -> dict
     vol_t, pri_t, inter_t = decompose(total_a, total_na, total_b, total_nb)
     return {
         "dimension": dimension,
+        "filter": None if filter_dimension is None else {filter_dimension: filter_value},
         "period_a": period_a, "period_b": period_b,
         "total_revenue_a": round(total_a, 2),
         "total_revenue_b": round(total_b, 2),
@@ -370,7 +401,8 @@ def contribution_breakdown(dimension: str, period_a: str, period_b: str) -> dict
         "reading_guide": (
             "total_volume_effect>0 表示靠单量增长；total_price_effect<0 表示客单价拖累；"
             "breakdown 里 delta_share_pct 是各维度对总变化的贡献占比（正=拉动，负=拖累）；"
-            "total_decompose_check 必须为 0，否则说明计算有误"
+            "total_decompose_check 必须为 0，否则说明计算有误；"
+            "filter 非空时所有数字只在该维度值内部统计，total_* 是子集小计而非全市场，不得当全市场数引用"
         ),
     }
 
@@ -411,6 +443,8 @@ TOOL_SPECS: dict[str, dict[str, Any]] = {
             "dimension": "platform|channel|product（必填）",
             "period_a": "基期 YYYY-MM（必填）",
             "period_b": "对比期 YYYY-MM（必填）",
+            "filter_dimension": "可选，与 filter_value 成对；限定在哪个维度内算，如 platform",
+            "filter_value": "可选，该维度的具体值，如 'APP'；给了之后 total_* 是该子集小计",
         },
     },
 }

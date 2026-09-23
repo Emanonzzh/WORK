@@ -42,13 +42,13 @@ streamlit run agent_lab/streamlit_app.py --server.port 8502
 python agent_lab/api_smoke_test.py               # 7 项接口冒烟（不花钱）
 python agent_lab/ui_smoke_test.py                # UI 冒烟（AppTest 无头执行）
 python agent_lab/api_smoke_test.py --with-llm    # 额外测 /analyze（调 LLM）
-python -m pytest                                 # 单元测试（233 项，不需要 MySQL / 不需要 LLM）
+python -m pytest                                 # 单元测试（245 项，不需要 MySQL / 不需要 LLM）
 ```
 
 **为什么接口一律用 `def` 而不是 `async def`**：分析是同步阻塞的（pymysql + 报告渲染 1~8 秒）。
 FastAPI 对 `def` 会自动丢线程池、不占事件循环；写成 `async def` 里跑同步阻塞代码会**卡死整个服务**。
 
-## 四、单元测试（pytest，233 项，**不需要 MySQL / 不需要 LLM**）
+## 四、单元测试（pytest，245 项，**不需要 MySQL / 不需要 LLM**）
 
 | 文件 | 覆盖内容 |
 |---|---|
@@ -106,5 +106,5 @@ python -m pytest -q agent_lab/tests/test_react_loop.py
    改成 `run_agent(max_steps=...)` 参数后，模块常量退化为"默认值"。
    `test_concurrent_runs_keep_their_own_step_limit` 就是防止有人改回去的回归测试。
 7. **"测试通过"本身不是证据，除非它曾经失败过**：把修复临时还原后重跑，
-   结果是 **15 failed + 1 collection error**；恢复修复后 **233 passed**。
+   结果是 **15 failed + 1 collection error**；恢复修复后 **245 passed**。
    这一步（falsification）才是测试有价值与否的分界线。

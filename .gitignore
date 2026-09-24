@@ -6,3 +6,7 @@ chroma/
 
 # 第三方开源面试题库：本地保留但不入库（避免与自己的作品混淆）
 面试题库_AI_Interview/
+
+# 评测跑出来的模型回答与打分结果（含真实数据的数字），只在本地看，不入库
+eval_results/
+agent_lab/eval_results/

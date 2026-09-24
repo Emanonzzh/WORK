@@ -2,7 +2,7 @@
 
 > ⚠️ **编号提醒**：简历上这是**项目一**；仓库早期文档因历史原因称它"项目二"。本文一律用项目名，不提编号。
 > 状态标注：✅ 已实现**并有落盘产物可查** ｜ 🟡 代码在但未端到端验证 ｜ ⬜ 不存在
-> **最后核对：2026-09-24**（按磁盘文件 + 实跑结果核对，非记忆。核对方法见**第十二节**，照着复跑一遍即可）
+> **最后核对：2026-09-25**（按磁盘文件 + 实跑结果核对，非记忆。核对方法见**第十二节**，照着复跑一遍即可）
 
 ---
 
@@ -11,13 +11,14 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │ ① 交互层                                                      ✅     │
-│    agent_lab/streamlit_app.py 352 行 · 看板 5 页签：                  │
+│    agent_lab/streamlit_app.py 357 行 · 看板 5 页签：                  │
 │      量价归因(瀑布图) · 维度下钻 · 异常发现 · 报告与对账 · 自然语言问数 │
-│    agent_lab/api.py 273 行 · 7 条路由：                               │
+│    agent_lab/api.py 279 行 · 7 条路由：                               │
 │      GET  /health  /metrics  /anomalies                              │
 │          /report/{period_b}  /reconciliation/{period_b}              │
+│          /attribution/{period_b}                                     │
 │      POST /analyze   （唯一调 LLM 的入口）                            │
-│    冒烟：api_smoke_test.py(7 项) + ui_smoke_test.py(官方 AppTest 无头)│
+│    冒烟：api_smoke_test.py(8 项) + ui_smoke_test.py(官方 AppTest 无头)│
 ├─────────────────────────────────────────────────────────────────────┤
 │ ② 编排层                                                      ✅     │
 │    实验线：手写 ReAct，不依赖框架 → agent_lab/p1_react.py 411 行      │
@@ -28,12 +29,12 @@
 │      → llm_narrative   （LLM 只在最后一环）                           │
 ├─────────────────────────────────────────────────────────────────────┤
 │ ③ 分析层                                                      ✅     │
-│    tools.py 466 行 · 4 个工具 + 口径表 + 参数白名单：                  │
+│    tools.py 487 行 · 4 个工具 + 口径表 + 参数白名单：                  │
 │      query_metrics / monthly_trend / rank_dimension                  │
 │      contribution_breakdown（量价三因子分解，decompose 在模块级可测）  │
 │    anomaly.py 283 行 · 同星期几基线 + 滚动中位数 + MAD 稳健 z(3.5)     │
 │      + 最小支持度 + 脉冲/漂移两类                                     │
-│    归因下钻：`attribution.py` 145 行 —— 总量→平台→该平台的商品，逐层闭合  ✅ │
+│    归因下钻：`attribution.py` 146 行 —— 总量→平台→该平台的商品，逐层闭合  ✅ │
 │      （DIMENSIONS 白名单 3 维：platform/channel/product）                    │
 │    report.py + templates/business_report.md.j2（Jinja2 → Markdown）   │
 ├─────────────────────────────────────────────────────────────────────┤
@@ -46,15 +47,17 @@
 │ ⑤ 评测层                                                      ✅     │
 │    异常检测 P/R/F1（注入集 + 差分口径 + 事件化后处理）                 │
 │    数字对账双级（文本级 + 数据库级）+ **对账器自测**                   │
-│    pytest 245 项（不连库、不调模型）                                  │
+│    pytest 273 项（不连库、不调模型）                                  │
 │    6 场景故障注入压测 p1_stress.py 144 行                             │
-│    ⬜ 单轮基线 p0_single_call.py（"循环 vs 单轮"对比数字还没有）        │
-│    ⬜ 25 题评测集（单步10/多步10/开放5）                              │
+│    ✅ 单轮基线 p0_single_call.py 185 行（三臂：no_tool/one_tool/loop） │
+│    ✅ 25 题评测集 eval_set.py 280 行 + 判分器 eval_run.py 548 行       │
+│    ✅ --probe-multi：拿 411 个"一次调用"撞标签，防 multi 虚高          │
 ├─────────────────────────────────────────────────────────────────────┤
-│ ⑥ 部署层                                                      🟡/⬜  │
+│ ⑥ 部署层                                                      🟡     │
 │    存量 docker-compose.yml 216 行 / 7 服务 —— **只在开发目录**，       │
 │      且是别人的代码；端到端从未跑过 → 对外不得说"已容器化"             │
-│    ⬜ CI（本仓库无 .github/workflows）                                │
+│    ✅ CI：`.github/workflows/ci.yml`（09-24），push/PR 自动跑 273 项   │
+│      首跑红在漏装 fastapi —— 别照着本地环境写 CI 依赖                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -147,19 +150,20 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | `p1_react.py` | 411 | 多步编排：模型决定查什么、查几次 | ✅ |
 | `report.py` | 432 | 报告渲染 + **双级对账** + 对账器自测 | ✅ |
 | `evaluate_anomaly.py` | 315 | 差分口径 + 事件化的 P/R/F1 评测 | ✅ |
-| `streamlit_app.py` | 352 | 看板 5 页签（09-24 补两层下钻链 + 闭合校验） | ✅ |
+| `streamlit_app.py` | 357 | 看板 5 页签（09-24 补两层下钻链 + 闭合校验） | ✅ |
 | `anomaly.py` | 283 | 时间序列异常检测 | ✅ |
-| `api.py` | 273 | 7 条 HTTP 路由（09-24 加 `/attribution`） | ✅ |
-| `attribution.py` | 145 | **自动多层下钻**：每层取最大分支作为下一层 filter，一行 SQL 都不写 | ✅ 09-24 |
+| `api.py` | 279 | 7 条 HTTP 路由（09-24 加 `/attribution`） | ✅ |
+| `attribution.py` | 146 | **自动多层下钻**：每层取最大分支作为下一层 filter，一行 SQL 都不写 | ✅ 09-24 |
 | `p1_stress.py` | 144 | 6 场景故障注入 | ✅ |
-| `make_sample_data.py` | 144 | 样例数据生成器（同 schema 同量级，`--seed` 可复现） | ✅ 09-24 |
+| `make_sample_data.py` | 152 | 样例数据生成器（同 schema 同量级，`--seed` 可复现） | ✅ 09-24 |
 | `inject_anomalies.py` | 126 | 注入 6 个已知异常，产 ground truth | ✅ |
-| `load_sample_data.py` | 110 | 样例 CSV → 表（走 INSERT，不需要全局 FILE 权限） | ✅ 09-24 |
-| `api_smoke_test.py` / `ui_smoke_test.py` | 120/73 | 接口与 UI 冒烟 | ✅ |
+| `load_sample_data.py` | 111 | 样例 CSV → 表（走 INSERT，不需要全局 FILE 权限） | ✅ 09-24 |
+| `api_smoke_test.py` / `ui_smoke_test.py` | 144/105 | 接口与 UI 冒烟 | ✅ |
 | `db.py` | 72 | 统一连接（09-23 起 6 个模块真的都走它） | ✅ |
-| `tests/` | 1092（7 文件 **70** 个 test 函数） | 单测，不连库不调模型 | ✅ **245 项，09-24 复跑通过** |
-| `p0_single_call.py` | — | 单轮调用基线 | ⬜ |
-| 25 题评测集 | — | 回归评测 | ⬜ |
+| `eval_run.py` | 548 | **判分器 + `--facts-only` 自检 + `--probe-multi` 撞标签** | ✅ 09-25 |
+| `eval_set.py` | 280 | 25 题（10 单步/10 多步/5 开放），**标准答案现调工具算** | ✅ 09-25 |
+| `p0_single_call.py` | 185 | 三臂对照组：`no_tool` / `one_tool` / `loop` | ✅ 09-25 |
+| `tests/` | 1380（8 文件 **96** 个 test 函数） | 单测，不连库不调模型 | ✅ **273 项，09-25 复跑通过**（`pytest.ini` 的 `addopts` 自带 `-q`，叠加后最后一行"273 passed"不打印，**数点才作数**） |
 
 ---
 
@@ -173,10 +177,10 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | LLM | DeepSeek（OpenAI 兼容协议，`deepseek-chat`），key 走 `.env` | ✅ |
 | 服务 | FastAPI + Pydantic 响应模型；`def` 而非 `async def`（同步阻塞丢线程池） | ✅ 本机可跑 |
 | 前端 | Streamlit + Plotly | ✅ |
-| 测试 | pytest 245 项 + 官方 `AppTest` UI 冒烟 + 接口冒烟 | ✅ |
+| 测试 | pytest 273 项 + 官方 `AppTest` UI 冒烟 + 接口冒烟 | ✅ |
 | 编排 | LangGraph | ⬜ **本项目未用**（别和另一个项目混着说） |
 | 部署 | Docker Compose 7 服务（存量） | 🟡 未端到端跑过 |
-| CI | GitHub Actions | ⬜ |
+| CI | GitHub Actions | ✅ 09-24 起 push/PR 自动跑全量单测（`study` 与 `WORK` 两库各一份；条数以 pytest 实跑为准，别信文档） |
 
 ---
 
@@ -198,7 +202,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 
 | 类别 | 内容 |
 |---|---|
-| **我新增** | `agent_lab/` **全部 23 个 py 文件 / 4526 行**（非测试 16 个 3434 行 + 测试 7 个 1092 行）、`sql/01_create_table.sql`（署名摘自上游）与 `sql/02_import_data.sample.sql`、`templates/business_report.md.j2`、`sql/02_import_data.windows.sql`（仅改路径，原文件未动）、本机 MySQL 8.4.9 便携版部署与 102,287 行导入、`.env` 配置 |
+| **我新增** | `agent_lab/` **全部 27 个 py 文件 / 5968 行**（非测试 19 个 4588 行 + 测试 8 个 1380 行，09-25 逐文件 `wc -l` 复测）、`sql/01_create_table.sql`（署名摘自上游）与 `sql/02_import_data.sample.sql`、`templates/business_report.md.j2`、`sql/02_import_data.windows.sql`（仅改路径，原文件未动）、本机 MySQL 8.4.9 便携版部署与 102,287 行导入、`.env` 配置 |
 | **我修改** | `ai-ecommerce-assistant/eval/run_sql_eval.py`（修 `.env` 加载顺序 bug：先读 `os.environ` 才 `load_dotenv`，CLI 裸环境必报"Key 未配置"） |
 | **存量复用（不是我写的）** | `agent_core/*`、`backend/*`(32 接口)、`ai-ecommerce-assistant/*`、`streamlit_app.py`(存量 BI)、`docker-compose.yml`、`deploy/*`、`sql/01~03`、`data/cleaned_orders.csv` |
 
@@ -237,8 +241,10 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | 对账器自测 | 注入假数字 `999,999.99` → `caught: true` | 同上（验证了验证器本身） |
 | 数据库级复算 | `all_ok: true`，逐指标 `abs_diff = 0.0` | 同上 |
 | 量价分解闭合 | `total_decompose_check = 0.0` | 09-22 本机实跑复核 |
-| 单元测试 | **245 passed / 0 failed / 0.36s** | 09-24 本机复跑（不连库、不调模型）。含 3 条连接层防回退断言 `tests/test_layering.py`，**已反证**：把 `pymysql.connect(` 重新塞回 `tools.py` 后该测试确实变红 |
-| 多层下钻链条闭合 | 全市场 Δ 1,389,478.21 → 微信公众号 Δ **776,684.70**（占本层 55.9%）→ 该平台内 992 个商品，子层 Δ **同为 776,684.70** | 09-24 真库实跑；判据"子层 Δ == 父层被选中那一行的 delta"由 `tests/test_attribution.py` 用假工具钉住 |
+| 单元测试 | **273 passed / 0 failed / 0.57s** | 09-25 本机复跑（不连库、不调模型；245 项是 09-24 的旧数，新增的 28 项是评测判分器与题集的自测）。含 3 条连接层防回退断言 `tests/test_layering.py`，**已反证**：把 `pymysql.connect(` 重新塞回 `tools.py` 后该测试确实变红 |
+| **三臂对照全量**（24 题口径，已剔假链 M02） | `loop` **20/24**（多步 7/9）、`one_tool` **11/24**（多步 0/9）、`no_tool` **0/24**（且 0 题编造） | 09-25 真跑 75 行 0 异常。全部细节与坑：`agent_lab/eval/three_arm_eval.md`；复跑 `python agent_lab/eval_run.py`（约 210 次调用，花钱） |
+| 判分可离线重打 | `--rescore` 用旧 JSON 重算，与在线结果一致 | 这条是省钱用的：判分口径改过一次就得重打 75 行，不重跑模型 |
+| multi 标签经机器校验 | 411 个"一次调用"候选逐题撞：标签与事实不符 **0** 题、链式豁免 7 题 | `python agent_lab/eval_run.py --probe-multi`（只连库不花钱）。这条存在的意义：前两版都是我**手判** multi，两次都被 pilot 打脸 |
 
 **已知局限（面试主动说，别等被问）**：
 ① 注入异常是人工构造的，幅度偏理想化，真实异常更隐蔽；
@@ -246,6 +252,14 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 ③ 事件匹配容差 ±7 天偏宽会高估查全率，所以同时给严格口径对照；
 ④ 真实数据只有 1 年（2025 全年），做不了同比基线，只能用周内效应 + 滚动中位数；
 ⑤ **未做多重比较校正（FDR）**——维度组合一多，误报率必然上升。
+⑥ **三臂评测的短板（跑完了仍然要一起说）**：我不小心用同一配置跑了**两份**全量，
+   对拷之后"温度 0 = 可复现"这个假设被推翻 —— 答案逐字相同只有 **13/75**，
+   判定相同 74/75，总正确率 `loop` 一份 20/25、一份 **21/25**。
+   所以 **20/24 这类数带 ±1 的运行间噪声**，不能讲成"稳定命中率"；开放题那 5 题
+   两份甚至各自指名了不同的"最该被追问平台"（都站得住），要报只报单步/多步两个客观桶。
+   另外判分器至今分不清"推导值"和"编造"（M08 的三个月相加就是这种假阳性）。
+⑦ **评测集自身没有防漂移**：25 题的 required 全靠现调工具算，数据一换题目就可能变得
+   一次调用可答或不可答 —— 改数据后必须先跑 `--facts-only` + `--probe-multi` 再谈分数。
 
 ---
 
@@ -253,7 +267,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 
 | 优先级 | 任务 | 预估 | 为什么是它 |
 |---|---|---|---|
-| **P0** | `p0_single_call.py` 单轮基线 + 25 题评测集，跑出"循环 vs 单轮"对比 | 半天 | 简历上**唯一还没有的对比数字**；数据、模型、工具今晚全就绪 |
+| ~~**P0**~~ ✅ | 25 题 × 三臂评测**已跑完全量**（09-25 凌晨，75 行 0 异常）→ 结果与全部坑都在 `agent_lab/eval/three_arm_eval.md` | 已交付 | **对外口径用剔掉假链 M02 的 24 题那张：`loop` 20/24、`one_tool` 11/24、`no_tool` 0/24；多步桶 7/9 vs 0/9。** 同配置跑了两遍，答案逐字相同只有 13/75（`loop` 另一遍 21/25）—— 这些数带 ±1 噪声，见已知局限 ⑥ 与 eval 文档第六节。另外三件必须一起说（详见 eval 文档第五节）：`no_tool` 0/24 却**一题都没编数**；单步桶两臂同为 10/10，**循环在单步题上零优势**；差距只归因到"一次取不全 + 报错能重试"这两件事 |
 | ~~P0~~ ✅ | ~~让公开仓库能被别人跑起来~~ **09-23 已做**：`sql/01_create_table.sql` + 样例生成器 + INSERT 载入器 + README 三步 | 已交付 | 实测跑通到 KPI 层；`LOAD DATA` 那条因需全局 FILE 权限而放弃（缺权限回 1045，易误判成密码错） |
 | ~~P1~~ ✅ | ~~自动多层下钻~~ **09-24 已做**：`attribution.drill_down` + `tools` 的维度内过滤参数 | 已交付 | 链条闭合性有测试钉住（假工具驱动）+ 真库不变量：子层 Δ 与父层被选中行逐分不差 |
 | ~~P1~~ ✅ | ~~GitHub Actions 跑 pytest~~ **09-24 已做**：`.github/workflows/ci.yml`，push/PR 自动跑 245 项 | 已交付 | **首跑是红的**：漏装 `fastapi`（245 项里有 2 项会 `import agent_lab.api`）。用"什么都没装的 Python 3.12 + 只声明那几个包"建临时 venv 本地复现后才定位——教训：**别照着本地环境写 CI 依赖** |
@@ -290,6 +304,10 @@ import tools; c=tools._connect().cursor(); c.execute('SELECT COUNT(*) AS c FROM 
 <venv>/Scripts/python.exe agent_lab/make_sample_data.py --rows 1000 --out sample_orders.csv
 <venv>/Scripts/python.exe agent_lab/load_sample_data.py --csv sample_orders.csv --table <临时表>
 
+# ④b 评测集自检（不花钱）：算 25 题标准答案 + 撞 multi 标签
+<venv>/Scripts/python.exe agent_lab/eval_run.py --facts-only      # 期望：25 题 0 异常
+<venv>/Scripts/python.exe agent_lab/eval_run.py --probe-multi     # 期望：标签与事实不符 0 题
+
 # ⑤ 多层下钻（判据：第 1 层的 subset_total_delta 必须等于第 0 层被选中那一行的 delta）
 cd agent_lab && <venv>/Scripts/python.exe -c "
 from dotenv import load_dotenv; load_dotenv(r'F:\Python\gongc\ai-commerce-intelligence-platform\.env')
@@ -322,6 +340,9 @@ from agent_lab import attribution as at; print(at._text_report(at.drill_down('20
 统一连接层（`tools.py` 收进 `db.connect`，净 −10 行）、可复现性（建表 SQL + 样例生成器 + INSERT 载入器 +
 README 三步）、多层下钻（`attribution.drill_down` + `tools` 的维度内过滤参数）。
 测试 230 → **245**，文件 18 → **23**，行数 3903 → **4526**。
+（09-25 又加了评测三件套与判分器自测：测试 245 → **273**，文件 23 → **27**，行数 4526 → **5968**。本段是历史叙述，排期看第十一节。）
 
-上一版"说对了的 3 项缺口"，现在**只剩 2 项**：`p0_single_call.py` 单轮基线、25 题评测集。
-`attribution.py` 已交付。**排期请按第十一节的当前状态，不要按这段历史叙述。**
+上一版"说对了的 3 项缺口"到 09-25 全部有产物：`attribution.py`（09-24）、
+`p0_single_call.py` 与 25 题评测集（09-25）。**只剩"跑全量 25 题 × 3 臂"这一件事**，
+而它的前置是题集别再虚高 —— 那由 `--probe-multi` 兜。
+**排期请按第十一节的当前状态，不要按这段历史叙述。**

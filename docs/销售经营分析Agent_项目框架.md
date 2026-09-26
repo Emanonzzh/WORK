@@ -47,16 +47,17 @@
 │ ⑤ 评测层                                                      ✅     │
 │    异常检测 P/R/F1（注入集 + 差分口径 + 事件化后处理）                 │
 │    数字对账双级（文本级 + 数据库级）+ **对账器自测**                   │
-│    pytest 273 项（不连库、不调模型）                                  │
+│    pytest 全量单测（不连库、不调模型；条数写在 README，CI 核对）       │
 │    6 场景故障注入压测 p1_stress.py 144 行                             │
 │    ✅ 单轮基线 p0_single_call.py 185 行（三臂：no_tool/one_tool/loop） │
-│    ✅ 25 题评测集 eval_set.py 280 行 + 判分器 eval_run.py 548 行       │
+│    ✅ 25 题评测集 eval_set.py 280 行 + 判分器 eval_run.py 553 行       │
 │    ✅ --probe-multi：拿 411 个"一次调用"撞标签，防 multi 虚高          │
 ├─────────────────────────────────────────────────────────────────────┤
 │ ⑥ 部署层                                                      🟡     │
 │    存量 docker-compose.yml 216 行 / 7 服务 —— **只在开发目录**，       │
 │      且是别人的代码；端到端从未跑过 → 对外不得说"已容器化"             │
-│    ✅ CI：`.github/workflows/ci.yml`（09-24），push/PR 自动跑 273 项   │
+│    ✅ CI：`.github/workflows/ci.yml`（09-24），push/PR 跑全量单测 +    │
+│      一条盯 README 里那个条数的测试（数字写错 CI 就红）              │
 │      首跑红在漏装 fastapi —— 别照着本地环境写 CI 依赖                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -160,10 +161,10 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | `load_sample_data.py` | 111 | 样例 CSV → 表（走 INSERT，不需要全局 FILE 权限） | ✅ 09-24 |
 | `api_smoke_test.py` / `ui_smoke_test.py` | 144/105 | 接口与 UI 冒烟 | ✅ |
 | `db.py` | 72 | 统一连接（09-23 起 6 个模块真的都走它） | ✅ |
-| `eval_run.py` | 548 | **判分器 + `--facts-only` 自检 + `--probe-multi` 撞标签** | ✅ 09-25 |
+| `eval_run.py` | 553 | **判分器 + `--facts-only` 自检 + `--probe-multi` 撞标签** | ✅ 09-25 |
 | `eval_set.py` | 280 | 25 题（10 单步/10 多步/5 开放），**标准答案现调工具算** | ✅ 09-25 |
 | `p0_single_call.py` | 185 | 三臂对照组：`no_tool` / `one_tool` / `loop` | ✅ 09-25 |
-| `tests/` | 1380（8 文件 **96** 个 test 函数） | 单测，不连库不调模型 | ✅ **273 项，09-25 复跑通过**（`pytest.ini` 的 `addopts` 自带 `-q`，叠加后最后一行"273 passed"不打印，**数点才作数**） |
+| `tests/` | 1474（9 文件 **99** 个 test 函数） | 单测，不连库不调模型 | ✅ **09-27 复跑 276 passed / 1.26s**（条数只写在根 README 一处，由 `tests/test_docs_current_numbers.py` 核对；另注意 `pytest.ini` 的 `addopts` 自带 `-q`，叠加会吞掉最后一行"N passed"，**数点才作数**） |
 
 ---
 
@@ -177,7 +178,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | LLM | DeepSeek（OpenAI 兼容协议，`deepseek-chat`），key 走 `.env` | ✅ |
 | 服务 | FastAPI + Pydantic 响应模型；`def` 而非 `async def`（同步阻塞丢线程池） | ✅ 本机可跑 |
 | 前端 | Streamlit + Plotly | ✅ |
-| 测试 | pytest 273 项 + 官方 `AppTest` UI 冒烟 + 接口冒烟 | ✅ |
+| 测试 | pytest 全量单测 + 官方 `AppTest` UI 冒烟 + 接口冒烟 + 文档条数自检 | ✅ |
 | 编排 | LangGraph | ⬜ **本项目未用**（别和另一个项目混着说） |
 | 部署 | Docker Compose 7 服务（存量） | 🟡 未端到端跑过 |
 | CI | GitHub Actions | ✅ 09-24 起 push/PR 自动跑全量单测（`study` 与 `WORK` 两库各一份；条数以 pytest 实跑为准，别信文档） |
@@ -202,7 +203,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 
 | 类别 | 内容 |
 |---|---|
-| **我新增** | `agent_lab/` **全部 27 个 py 文件 / 5968 行**（非测试 19 个 4588 行 + 测试 8 个 1380 行，09-25 逐文件 `wc -l` 复测）、`sql/01_create_table.sql`（署名摘自上游）与 `sql/02_import_data.sample.sql`、`templates/business_report.md.j2`、`sql/02_import_data.windows.sql`（仅改路径，原文件未动）、本机 MySQL 8.4.9 便携版部署与 102,287 行导入、`.env` 配置 |
+| **我新增** | `agent_lab/` **全部 28 个 py 文件 / 6067 行**（非测试 19 个 4593 行 + 测试 9 个 1474 行，09-25 逐文件 `wc -l` 复测）、`sql/01_create_table.sql`（署名摘自上游）与 `sql/02_import_data.sample.sql`、`templates/business_report.md.j2`、`sql/02_import_data.windows.sql`（仅改路径，原文件未动）、本机 MySQL 8.4.9 便携版部署与 102,287 行导入、`.env` 配置 |
 | **我修改** | `ai-ecommerce-assistant/eval/run_sql_eval.py`（修 `.env` 加载顺序 bug：先读 `os.environ` 才 `load_dotenv`，CLI 裸环境必报"Key 未配置"） |
 | **存量复用（不是我写的）** | `agent_core/*`、`backend/*`(32 接口)、`ai-ecommerce-assistant/*`、`streamlit_app.py`(存量 BI)、`docker-compose.yml`、`deploy/*`、`sql/01~03`、`data/cleaned_orders.csv` |
 
@@ -241,7 +242,7 @@ total_interaction      -118,664.70     total_decompose_check   0.0
 | 对账器自测 | 注入假数字 `999,999.99` → `caught: true` | 同上（验证了验证器本身） |
 | 数据库级复算 | `all_ok: true`，逐指标 `abs_diff = 0.0` | 同上 |
 | 量价分解闭合 | `total_decompose_check = 0.0` | 09-22 本机实跑复核 |
-| 单元测试 | **273 passed / 0 failed / 0.57s** | 09-25 本机复跑（不连库、不调模型；245 项是 09-24 的旧数，新增的 28 项是评测判分器与题集的自测）。含 3 条连接层防回退断言 `tests/test_layering.py`，**已反证**：把 `pymysql.connect(` 重新塞回 `tools.py` 后该测试确实变红 |
+| 单元测试 | **276 passed / 0 failed / 1.26s** | 09-27 本机复跑（不连库、不调模型；245 项是 09-24 的旧数，之后 28 项来自评测判分器与题集自测、3 项来自"文档条数自检"）。含 3 条连接层防回退断言 `tests/test_layering.py`，**已反证**：把 `pymysql.connect(` 重新塞回 `tools.py` 后该测试确实变红 |
 | **三臂对照全量**（24 题口径，已剔假链 M02） | `loop` **20/24**（多步 7/9）、`one_tool` **11/24**（多步 0/9）、`no_tool` **0/24**（且 0 题编造） | 09-25 真跑 75 行 0 异常。全部细节与坑：`agent_lab/eval/three_arm_eval.md`；复跑 `python agent_lab/eval_run.py`（约 210 次调用，花钱） |
 | 判分可离线重打 | `--rescore` 用旧 JSON 重算，与在线结果一致 | 这条是省钱用的：判分口径改过一次就得重打 75 行，不重跑模型 |
 | multi 标签经机器校验 | 411 个"一次调用"候选逐题撞：标签与事实不符 **0** 题、链式豁免 7 题 | `python agent_lab/eval_run.py --probe-multi`（只连库不花钱）。这条存在的意义：前两版都是我**手判** multi，两次都被 pilot 打脸 |

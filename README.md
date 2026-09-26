@@ -15,7 +15,7 @@
 | **`agent_lab/`** | 销售经营分析 Agent：工具层 / 异常检测 / 评测 / 报告对账 / FastAPI / Streamlit 看板 | ⭐ **项目一（作品）** |
 | **`day21.py`** `day22_seed_data.py` `day23_risk.py` `api_rag.py` `Dockerfile` `deploy.sh` | 遥感监测智能助手：三工具 Agent + 一键部署 | ⭐ **项目二（作品）** |
 | `rag_eval.py` `rag_eval_questions.py` | 遥感项目的检索评测（12 题 × 4 组参数对比） | ⭐ 评测证据 |
-| `agent_lab/tests/` | 273 项 pytest 单测（不连库、不调模型，0.6 秒跑完） | ⭐ 质量证据 |
+| `agent_lab/tests/` | 276 项 pytest 单测（不连库、不调模型，0.5 秒跑完；**全仓库只有这一处写死条数**，写错 CI 直接红） | ⭐ 质量证据 |
 | `docs/` | 复现指南、项目框架、SQL 入门与进阶 | 📄 技术文档 |
 | `AGENTS.md` | 已修过的 5 个真 bug、环境、技术坑、**未验证项清单** | 📄 工程记录 |
 | `monitoring.db` `知识库.txt` `地质灾害防治条例.txt` `点位数据.json` `监测报告.txt` | 数据与知识库素材 | 🗂 数据 |

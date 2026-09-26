@@ -8,7 +8,7 @@
 | 目录 | 内容 |
 |---|---|
 | `agent_lab/` | **项目一**：销售经营分析 Agent（FastAPI + 手写 ReAct + 量价三因子分解 + 异常检测 + 报告数字对账） |
-| `agent_lab/tests/` | 245 项 pytest 单测，**不需要 MySQL、不需要 LLM**，约 0.35 秒跑完（数字以 `python -m pytest -q` 的输出为准，别信文档里的快照） |
+| `agent_lab/tests/` | 全量 pytest 单测，**不需要 MySQL、不需要 LLM**；条数只写在根 README 那一行，由 `tests/test_docs_current_numbers.py` 核对真假 |
 | `day19_sqlite.py` … `day24_analysis.py`、`day21.py` | **项目二**：遥感监测智能问答 Agent（RAG + 三工具 LangGraph Agent）的演进过程与成品 |
 | `rag_eval.py` / `rag_eval_questions.py` | 项目二的 RAG 检索评测脚本与 12 题测试集 |
 | `monitoring.db`、`*.txt`、`*.json` | 项目二使用的真实数据与知识库 |

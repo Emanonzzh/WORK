@@ -42,13 +42,13 @@ streamlit run agent_lab/streamlit_app.py --server.port 8502
 python agent_lab/api_smoke_test.py               # 7 项接口冒烟（不花钱）
 python agent_lab/ui_smoke_test.py                # UI 冒烟（AppTest 无头执行）
 python agent_lab/api_smoke_test.py --with-llm    # 额外测 /analyze（调 LLM）
-python -m pytest                                 # 单元测试（245 项，不需要 MySQL / 不需要 LLM）
+python -m pytest                                 # 全量单元测试（不需要 MySQL / 不需要 LLM；条数以本命令输出为准）
 ```
 
 **为什么接口一律用 `def` 而不是 `async def`**：分析是同步阻塞的（pymysql + 报告渲染 1~8 秒）。
 FastAPI 对 `def` 会自动丢线程池、不占事件循环；写成 `async def` 里跑同步阻塞代码会**卡死整个服务**。
 
-## 四、单元测试（pytest，245 项，**不需要 MySQL / 不需要 LLM**）
+## 四、单元测试（pytest 全量，**不需要 MySQL / 不需要 LLM**）
 
 | 文件 | 覆盖内容 |
 |---|---|
